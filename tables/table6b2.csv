@@ -1,0 +1,48 @@
+c1_dd_05km_p, 0.11
+c1_dd_05km_beta, 0.049
+c1_dd_05km_starbeta, 0.049
+c1_dd_05km_se, 0.031
+c1_dd_05km_n,2153
+c1_dd_05km_r2, 0.23
+c2_dd_05km_p, 0.04
+c2_dd_05km_beta, 0.066
+c2_dd_05km_starbeta,0.066**
+c2_dd_05km_se, 0.032
+c2_dd_05km_n,993
+c2_dd_05km_r2, 0.16
+c3_dd_05km_p, 0.18
+c3_dd_05km_beta, 0.043
+c3_dd_05km_starbeta, 0.043
+c3_dd_05km_se, 0.032
+c3_dd_05km_n,814
+c3_dd_05km_r2, 0.20
+c4_dd_05km_p, 0.84
+c4_dd_05km_beta, 0.007
+c4_dd_05km_starbeta, 0.007
+c4_dd_05km_se, 0.034
+c4_dd_05km_n,343
+c4_dd_05km_r2, 0.28
+c1_dd_1km_p, 0.22
+c1_dd_1km_beta, 0.034
+c1_dd_1km_starbeta, 0.034
+c1_dd_1km_se, 0.028
+c1_dd_1km_n,2153
+c1_dd_1km_r2, 0.23
+c2_dd_1km_p, 0.07
+c2_dd_1km_beta, 0.054
+c2_dd_1km_starbeta,0.054*
+c2_dd_1km_se, 0.030
+c2_dd_1km_n,993
+c2_dd_1km_r2, 0.16
+c3_dd_1km_p, 0.42
+c3_dd_1km_beta, 0.023
+c3_dd_1km_starbeta, 0.023
+c3_dd_1km_se, 0.029
+c3_dd_1km_n,814
+c3_dd_1km_r2, 0.20
+c4_dd_1km_p, 0.40
+c4_dd_1km_beta,-0.027
+c4_dd_1km_starbeta,-0.027
+c4_dd_1km_se, 0.032
+c4_dd_1km_n,343
+c4_dd_1km_r2, 0.28

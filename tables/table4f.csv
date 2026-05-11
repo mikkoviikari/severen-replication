@@ -1,0 +1,48 @@
+c1_kpval, 12.0
+c1_cdval, 48.2
+c1_p, 0.00
+c1_beta, 1.150
+c1_starbeta,1.150***
+c1_se, 0.332
+c1_n,2432
+c1_r2, 0.02
+c2_kpval,  7.6
+c2_cdval, 27.9
+c2_p, 0.01
+c2_beta, 0.918
+c2_starbeta,0.918***
+c2_se, 0.333
+c2_n,2426
+c2_r2, 0.11
+c3_kpval, 12.4
+c3_cdval, 50.8
+c3_p, 0.00
+c3_beta, 1.165
+c3_starbeta,1.165***
+c3_se, 0.331
+c3_n,2533
+c3_r2, 0.02
+c4_kpval,  8.0
+c4_cdval, 29.8
+c4_p, 0.00
+c4_beta, 0.939
+c4_starbeta,0.939***
+c4_se, 0.332
+c4_n,2525
+c4_r2, 0.10
+c5_kpval, 12.4
+c5_cdval, 50.8
+c5_p, 0.00
+c5_beta, 1.165
+c5_starbeta,1.165***
+c5_se, 0.331
+c5_n,2533
+c5_r2, 0.02
+c6_kpval,  8.0
+c6_cdval, 29.8
+c6_p, 0.00
+c6_beta, 0.939
+c6_starbeta,0.939***
+c6_se, 0.332
+c6_n,2525
+c6_r2, 0.10

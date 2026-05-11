@@ -1,0 +1,25 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{3}{c}}
+\hline\hline
+            &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}\\
+            &\multicolumn{1}{c}{flowzero}&\multicolumn{1}{c}{flowzero}&\multicolumn{1}{c}{flowzero}\\
+\hline
+tran05\_cc   &       0.033\sym{+} &       0.020        &       0.021        \\
+            &     (0.018)        &     (0.016)        &     (0.016)        \\
+[1em]
+centHwy05\_cc&                    &                    &      -0.007        \\
+            &                    &                    &     (0.047)        \\
+[1em]
+centHwy10\_cc&                    &                    &       0.001        \\
+            &                    &                    &     (0.037)        \\
+[1em]
+\_cons      &       0.615\sym{**}&       0.615\sym{**}&       0.615\sym{**}\\
+            &     (0.000)        &     (0.000)        &     (0.000)        \\
+\hline
+\(N\)       &     1263082        &     1262478        &     1262478        \\
+\hline\hline
+\multicolumn{4}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{4}{l}{\footnotesize \sym{+} \(p<0.10\), \sym{*} \(p<0.05\), \sym{**} \(p<0.01\)}\\
+\end{tabular}
+}

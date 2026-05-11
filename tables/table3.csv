@@ -1,0 +1,120 @@
+no_250_all_p, 0.07
+no_250_all_beta,-0.079
+no_250_all_starbeta,-0.079*
+no_250_all_se, 0.043
+no_250_all_n,286392
+no_250_all_r2, 0.81
+no_500_all_p, 0.41
+no_500_all_beta,-0.051
+no_500_all_starbeta,-0.051
+no_500_all_se, 0.062
+no_500_all_n,286392
+no_500_all_r2, 0.81
+no_1000_all_p, 0.45
+no_1000_all_beta,-0.036
+no_1000_all_starbeta,-0.036
+no_1000_all_se, 0.048
+no_1000_all_n,286392
+no_1000_all_r2, 0.81
+no_2000_all_p, 0.16
+no_2000_all_beta,-0.039
+no_2000_all_starbeta,-0.039
+no_2000_all_se, 0.028
+no_2000_all_n,286392
+no_2000_all_r2, 0.81
+no_4000_all_p, 0.74
+no_4000_all_beta,-0.006
+no_4000_all_starbeta,-0.006
+no_4000_all_se, 0.019
+no_4000_all_n,286392
+no_4000_all_r2, 0.81
+fe_250_all_p, 0.62
+fe_250_all_beta,-0.020
+fe_250_all_starbeta,-0.020
+fe_250_all_se, 0.042
+fe_250_all_n,286142
+fe_250_all_r2, 0.81
+fe_500_all_p, 0.72
+fe_500_all_beta,-0.023
+fe_500_all_starbeta,-0.023
+fe_500_all_se, 0.063
+fe_500_all_n,286142
+fe_500_all_r2, 0.81
+fe_1000_all_p, 0.73
+fe_1000_all_beta,-0.016
+fe_1000_all_starbeta,-0.016
+fe_1000_all_se, 0.047
+fe_1000_all_n,286142
+fe_1000_all_r2, 0.81
+fe_2000_all_p, 0.42
+fe_2000_all_beta,-0.022
+fe_2000_all_starbeta,-0.022
+fe_2000_all_se, 0.028
+fe_2000_all_n,286142
+fe_2000_all_r2, 0.81
+fe_4000_all_p, 0.53
+fe_4000_all_beta, 0.012
+fe_4000_all_starbeta, 0.012
+fe_4000_all_se, 0.019
+fe_4000_all_n,286142
+fe_4000_all_r2, 0.81
+no_250_dr_p, 0.09
+no_250_dr_beta,-0.144
+no_250_dr_starbeta,-0.144*
+no_250_dr_se, 0.084
+no_250_dr_n,89614
+no_250_dr_r2, 0.85
+no_500_dr_p, 0.03
+no_500_dr_beta,-0.197
+no_500_dr_starbeta,-0.197**
+no_500_dr_se, 0.089
+no_500_dr_n,89614
+no_500_dr_r2, 0.85
+no_1000_dr_p, 0.89
+no_1000_dr_beta, 0.011
+no_1000_dr_starbeta, 0.011
+no_1000_dr_se, 0.076
+no_1000_dr_n,89614
+no_1000_dr_r2, 0.85
+no_2000_dr_p, 0.36
+no_2000_dr_beta,-0.052
+no_2000_dr_starbeta,-0.052
+no_2000_dr_se, 0.057
+no_2000_dr_n,89614
+no_2000_dr_r2, 0.85
+no_4000_dr_p, 0.69
+no_4000_dr_beta, 0.013
+no_4000_dr_starbeta, 0.013
+no_4000_dr_se, 0.032
+no_4000_dr_n,89614
+no_4000_dr_r2, 0.85
+fe_250_dr_p, 0.08
+fe_250_dr_beta,-0.150
+fe_250_dr_starbeta,-0.150*
+fe_250_dr_se, 0.085
+fe_250_dr_n,89432
+fe_250_dr_r2, 0.85
+fe_500_dr_p, 0.04
+fe_500_dr_beta,-0.189
+fe_500_dr_starbeta,-0.189**
+fe_500_dr_se, 0.093
+fe_500_dr_n,89432
+fe_500_dr_r2, 0.85
+fe_1000_dr_p, 0.75
+fe_1000_dr_beta,-0.024
+fe_1000_dr_starbeta,-0.024
+fe_1000_dr_se, 0.075
+fe_1000_dr_n,89432
+fe_1000_dr_r2, 0.85
+fe_2000_dr_p, 0.19
+fe_2000_dr_beta,-0.070
+fe_2000_dr_starbeta,-0.070
+fe_2000_dr_se, 0.054
+fe_2000_dr_n,89432
+fe_2000_dr_r2, 0.85
+fe_4000_dr_p, 0.96
+fe_4000_dr_beta, 0.002
+fe_4000_dr_starbeta, 0.002
+fe_4000_dr_se, 0.035
+fe_4000_dr_n,89432
+fe_4000_dr_r2, 0.85

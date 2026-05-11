@@ -1,0 +1,42 @@
+c1_p, 0.04
+c1_beta,-0.782
+c1_starbeta,-0.782**
+c1_se, 0.378
+c1_n,143593
+c1_r2,-0.01
+c1_kpval,239.7
+c1_cdval,363.2
+c1_first_p, 0.00
+c1_first_beta, 1.139
+c1_first_starbeta,1.139***
+c1_first_se, 0.074
+c1_first_n,143593
+c1_first_r2, 0.13
+c2_p, 0.04
+c2_beta,-0.778
+c2_starbeta,-0.778**
+c2_se, 0.377
+c2_n,143593
+c2_r2,-0.01
+c2_kpval,240.0
+c2_cdval,364.0
+c2_first_p, 0.00
+c2_first_beta, 1.140
+c2_first_starbeta,1.140***
+c2_first_se, 0.074
+c2_first_n,143593
+c2_first_r2, 0.13
+c3_p, 0.01
+c3_beta,-1.008
+c3_starbeta,-1.008***
+c3_se, 0.382
+c3_n,141188
+c3_r2,-0.02
+c3_kpval,236.5
+c3_cdval,356.5
+c3_first_p, 0.00
+c3_first_beta, 1.135
+c3_first_starbeta,1.135***
+c3_first_se, 0.074
+c3_first_n,141188
+c3_first_r2, 0.12

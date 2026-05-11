@@ -1,0 +1,27 @@
+$\Delta \ln(\text{Employment})$  
+			& $$c1_emp_starbeta$$ & $$c2_emp_starbeta$$ & $$c3_emp_starbeta$$ \\
+            &($$c1_emp_se$$)      &($$c2_emp_se$$)      &($$c3_emp_se$$)      \\   
+[4pt]
+$\Delta \ln(\text{Prod.\ Land})$    
+			&                    &                    & $$c3_land_starbeta$$&                    \\
+            &                    &                    &($$c3_land_se$$)      &                    \\
+[4pt]
+$\Delta \ln(\text{Emp.\ Density})$   
+			&                    &                    &                    & $$c4_dens_starbeta$$ \\
+            &                    &                    &                    &($$c4_dens_se$$)         \\
+\midrule
+\multicolumn{4}{l}{{\bf B. Specification Test} ($H_0:$ $\psi_{\text{Employment}} / \psi_{\text{Prod.\ Land}} = -1$)} \\[4pt]
+$\psi_{\text{Employment}} / \psi_{\text{Prod.\ Land}}$ 
+	& 	&	& $$c3_spectest_beta$$ &  \\
+\quad $[\cdot] = \Pr(H_0)$
+	& 	&	&[$$c3_pneg1$$]     &     \\
+\midrule 
+\multicolumn{3}{l}{{\bf C. First Stage}} \\[4pt]
+$\Delta z_{jt}^{LS}(\rho)$
+			& $$c1_first_starbeta$$ & $$c2_first_starbeta$$ & $$c3_first_starbeta$$  & $$c4_first_starbeta$$  \\
+            &($$c1_first_se$$)      &($$c2_first_se$$)      &($$c3_first_se$$)       &($$c4_first_se$$)    \\ [4pt]
+F-stat (CD)	& $$c1_cdval$$   & $$c2_cdval$$   & $$c3_cdval$$  & $$c4_cdval$$           \\            
+F-stat (KP)	& $$c1_kpval$$   & $$c2_kpval$$   & $$c3_kpval$$  & $$c4_kpval$$           \\[4pt]
+\(N\)    	& $$c1_emp_n$$       & $$c2_emp_n$$       & $$c3_emp_n$$      & $$c4_dens_n$$  \\
+\midrule
+Own shock as control &	- 	& Y & Y & Y	\\

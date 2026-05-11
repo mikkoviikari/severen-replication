@@ -1,0 +1,18 @@
+# Raw input data — stay local, not committed
+data/
+
+# All output data (intermediate .dta, .csv, .RData — up to 13 GB)
+output/
+
+# Stata log and swap files
+*.log
+*.smcl
+~*.stswp
+
+# macOS metadata
+.DS_Store
+
+# R session files
+.Rhistory
+.RData
+.Rproj.user/

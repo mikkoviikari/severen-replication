@@ -1,0 +1,98 @@
+c1_p, 0.01
+c1_beta, 2.325
+c1_starbeta,2.325**
+c1_se, 0.939
+c1_n,2232
+c1_r2,-10.13
+c1_elast_p, 0.01
+c1_elast_beta, 0.430
+c1_elast_starbeta,0.430**
+c1_elast_se, 0.174
+c1_elast_n,2232
+c1_elast_r2,
+c2_p, 0.01
+c2_beta, 2.168
+c2_starbeta,2.168***
+c2_se, 0.807
+c2_n,2232
+c2_r2,-8.82
+c2_elast_p, 0.01
+c2_elast_beta, 0.461
+c2_elast_starbeta,0.461***
+c2_elast_se, 0.172
+c2_elast_n,2232
+c2_elast_r2,
+c3_hc_p, 0.00
+c3_hc_beta, 1.762
+c3_hc_starbeta,1.762***
+c3_hc_se, 0.533
+c3_hc_n,2175
+c3_hc_r2,-4.85
+c3_land_p, 0.03
+c3_land_beta,-2.082
+c3_land_starbeta,-2.082**
+c3_land_se, 0.970
+c3_land_n,2175
+c3_land_r2,-4.85
+c3_elast_p, 0.00
+c3_elast_beta, 0.568
+c3_elast_starbeta,0.568***
+c3_elast_se, 0.172
+c3_elast_n,2175
+c3_elast_r2,
+c3_spectest_p, 0.00
+c3_spectest_beta,-0.846
+c3_spectest_starbeta,-0.846***
+c3_spectest_se, 0.286
+c3_spectest_n,2175
+c3_spectest_r2,
+c3_pneg1, 0.590
+c4_hc_p, 0.00
+c4_hc_beta, 1.644
+c4_hc_starbeta,1.644***
+c4_hc_se, 0.476
+c4_hc_n,2175
+c4_hc_r2,-4.17
+c4_land_p, 0.04
+c4_land_beta,-1.927
+c4_land_starbeta,-1.927**
+c4_land_se, 0.945
+c4_land_n,2175
+c4_land_r2,-4.17
+c4_elast_p, 0.00
+c4_elast_beta, 0.608
+c4_elast_starbeta,0.608***
+c4_elast_se, 0.176
+c4_elast_n,2175
+c4_elast_r2,
+c4_spectest_p, 0.00
+c4_spectest_beta,-0.853
+c4_spectest_starbeta,-0.853***
+c4_spectest_se, 0.293
+c4_spectest_n,2175
+c4_spectest_r2,
+c4_pneg1, 0.616
+c5_p, 0.00
+c5_beta, 1.687
+c5_starbeta,1.687***
+c5_se, 0.508
+c5_n,2175
+c5_r2,-4.46
+c5_elast_p, 0.00
+c5_elast_beta, 0.593
+c5_elast_starbeta,0.593***
+c5_elast_se, 0.178
+c5_elast_n,2175
+c5_elast_r2,
+c6_p, 0.00
+c6_beta, 1.602
+c6_starbeta,1.602***
+c6_se, 0.453
+c6_n,2175
+c6_r2,-3.98
+c6_elast_p, 0.00
+c6_elast_beta, 0.624
+c6_elast_starbeta,0.624***
+c6_elast_se, 0.177
+c6_elast_n,2175
+c6_elast_r2,
