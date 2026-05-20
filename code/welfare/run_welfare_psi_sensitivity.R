@@ -13,6 +13,7 @@ setwd("/Users/mikko.viikari/Projects/severen")
 
 load("./output/welfare/la_data_2000_v202012.RData")
 
+library(Matrix)   # must be attached before mats$flowmat (dgCMatrix) is accessed
 library(dplyr)
 source("./code/welfare/simcode_functions.R")
 
