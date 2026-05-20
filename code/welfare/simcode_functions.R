@@ -278,6 +278,8 @@ eqSolver <- function(N, pi.0, W.0, Q.0, A.hat, BED.hat, C.hat, times, p, t, skip
     }
     
     ## Save results to output list
+    # Residential population hat: colSums over workplaces (rows) for each residence (col)
+    N_res_hat <- colSums(pi.0 * pi.hat.i, na.rm=TRUE) / colSums(pi.0, na.rm=TRUE)
     out <- list(closed.percentloss = out.closed.percentloss,
                 closed.percentbenefit = out.closed.percentbenefit,
                 closed.percentbenefit.sd = out.calcs$welfsd,
@@ -289,8 +291,12 @@ eqSolver <- function(N, pi.0, W.0, Q.0, A.hat, BED.hat, C.hat, times, p, t, skip
                 diff.pi = diff.pi,
                 diff.W = diff.W,
                 diff.Q = diff.Q,
-                maxeigen = maxeigen)
+                maxeigen = maxeigen,
+                Q.hat   = Q.hat.i,   # tract housing price change (ratio vs baseline)
+                W.hat   = W.hat.i,   # tract wage change (ratio vs baseline)
+                N.hat   = N_res_hat) # residential pop change (ratio vs baseline)
   } else {
+    N_res_hat <- colSums(pi.0 * pi.hat.i, na.rm=TRUE) / colSums(pi.0, na.rm=TRUE)
     out <- list(closed.percentloss = out.closed.percentloss,
                 closed.percentbenefit = out.closed.percentbenefit,
                 closed.percentbenefit.sd = out.calcs$welfsd,
@@ -299,7 +305,10 @@ eqSolver <- function(N, pi.0, W.0, Q.0, A.hat, BED.hat, C.hat, times, p, t, skip
                 diff.pi = diff.pi,
                 diff.W = diff.W,
                 diff.Q = diff.Q,
-                maxeigen = maxeigen)
+                maxeigen = maxeigen,
+                Q.hat   = Q.hat.i,
+                W.hat   = W.hat.i,
+                N.hat   = N_res_hat)
   }
   print(summary(rowSums(pi.0 * pi.hat.i, na.rm = TRUE)/rowSums(pi.0, na.rm = TRUE)))
   return(out)
