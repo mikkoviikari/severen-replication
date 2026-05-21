@@ -22,9 +22,9 @@ Required software:
 - **Stata v16.0** or later (MP recommended for large flow regressions)
 - **R v3.6** or later
 - **Python 3** or later (to execute stata-tex table output)
-- **Java Virtual Machine (JVM)** — required for Graphhopper routing
-- **Graphhopper** routing engine — [https://github.com/graphhopper/graphhopper](https://github.com/graphhopper/graphhopper)
-  (only needed to rebuild travel time matrices from scratch; see [Graphhopper](#graphhopper) below)
+- **Java Virtual Machine (JVM)** and **Graphhopper** — only needed if rebuilding
+  travel time matrices from scratch (takes ~1 week; see original README for details).
+  Pre-computed route files are included in the Harvard Dataverse release.
 
 ---
 
@@ -58,12 +58,19 @@ install.packages(c(
 
 ## Data
 
-Raw data and intermediate outputs are **not included** in the repository (gitignored).
-Place the following in the `data/` directory before running the build pipeline.
+Raw data and intermediate outputs are **not included** in this repository (gitignored).
+The full replication package — including all raw data, intermediate `.dta` files, and
+pre-computed route outputs — is available from the Harvard Dataverse:
+
+> **[https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/SWCGSP](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/SWCGSP)**
+
+Download and unpack `data.tar.gz`, `output/output_main.tar.gz`, and
+`output/output_other.tar.gz` into the corresponding directories before running
+the pipeline.
 
 > **Note on NCDB:** The Neighborhood Change Database (used for pre-trends analysis,
-> Appendix Table H2) is licensed to the Federal Reserve Bank of Philadelphia and is
-> **not included in the public release**. To obtain access contact Geolytics:
+> Appendix Table H2) is licensed and **not included in the Dataverse release**.
+> To obtain access contact Geolytics:
 > P.O. Box 5336, Somerville, NJ 08876 · T: 800-577-6717 · questions@geolytics.com
 
 | Directory | Source | Contents |
@@ -99,7 +106,6 @@ severen/
 │   ├── analysis/     # 18 Stata + 9 R scripts: estimation, simulation, maps
 │   ├── welfare/      # 7 R scripts: GE equilibrium solver and counterfactuals
 │   └── tablecode/    # stata-tex table generation (see tablecode/README.md)
-├── graphhopper/      # Graphhopper routing engine files (JVM, OSM data, config)
 ├── tables/           # LaTeX table templates and filled results
 ├── figures/          # Output maps and figures
 ├── results/          # Preliminary model results (called by analysis scripts)
@@ -253,23 +259,6 @@ Key result: even at 20× speed, corridor population share rises only from 7.9% t
 10.6% of metro workers — because only 94/2,552 tracts (3.7%) are near stations.
 The welfare gain (~$5,900/person at 20×) is almost entirely capitalised into land
 prices at station tracts. Network expansion, not speed, is the binding constraint.
-
----
-
-## Graphhopper
-
-The `graphhopper/` folder contains the files needed to spin up the Graphhopper routing
-virtual machine. Java (JVM) is required.
-
-To initiate: execute the contents of `./call.txt` in a terminal. This starts the JVM
-and routing engine using the SoCal OSM map data (`socal-latest.osm.pbf`) and
-configuration (`config-example.yml`). The R script `la_routingscript.R` then queries
-the engine and saves tract-to-tract travel time routes.
-
-> **Warning:** This process takes approximately **one week** to complete and produces
-> approximately **40 GB** of output in `output/routes/`. The route files are omitted
-> from the public release but are available on request. If you are not rebuilding
-> routes from scratch, use the pre-computed files from `output/output_other.tar.gz`.
 
 ---
 
