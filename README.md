@@ -12,9 +12,25 @@ faster-transit counterfactuals.
 
 ---
 
+## Computational requirements
+
+Original environment: Windows 10 Enterprise (64-bit), Intel Core i7-8700 @ 3.20 GHz,
+16.0 GB RAM. At least **8 GB RAM** recommended (some Stata data files are very large).
+
+Required software:
+
+- **Stata v16.0** or later (MP recommended for large flow regressions)
+- **R v3.6** or later
+- **Python 3** or later (to execute stata-tex table output)
+- **Java Virtual Machine (JVM)** — required for Graphhopper routing
+- **Graphhopper** routing engine — [https://github.com/graphhopper/graphhopper](https://github.com/graphhopper/graphhopper)
+  (only needed to rebuild travel time matrices from scratch; see [Graphhopper](#graphhopper) below)
+
+---
+
 ## Prerequisites
 
-### Stata (≥ 16; MP strongly recommended for flow regressions)
+### Stata packages
 
 Install all required packages once:
 
@@ -22,10 +38,14 @@ Install all required packages once:
 do setup.do
 ```
 
-This installs: `ivreg2`, `ivreghdfe`, `reghdfe`, `ppmlhdfe`, `ranktest`, `regsave`,
-`winsor2`, `estout`, `coefplot`, `gtools`, `binsreg`, `blindschemes`.
+This installs: `blindschemes`, `estout`, `reghdfe`, `ppmlhdfe`, `ftools`, `gtools`,
+`winsor2`, `ivreg2`, `ivreghdfe`, `ranktest`, `regsave`, `coefplot`, `binsreg`,
+and `stata-tex` (from [https://github.com/paulnov/stata-tex](https://github.com/paulnov/stata-tex)).
 
-### R (≥ 4.2)
+> **Note:** When running stata-tex, make sure Dropbox or other file-syncing utilities
+> are inactive. stata-tex edits files in place and sync conflicts can cause errors.
+
+### R packages
 
 ```r
 install.packages(c(
@@ -38,21 +58,32 @@ install.packages(c(
 
 ## Data
 
-Raw data are **not included** in the repository (see `.gitignore`). Place the following
-in the `data/` directory before running the build pipeline:
+Raw data and intermediate outputs are **not included** in the repository (gitignored).
+Place the following in the `data/` directory before running the build pipeline.
+
+> **Note on NCDB:** The Neighborhood Change Database (used for pre-trends analysis,
+> Appendix Table H2) is licensed to the Federal Reserve Bank of Philadelphia and is
+> **not included in the public release**. To obtain access contact Geolytics:
+> P.O. Box 5336, Somerville, NJ 08876 · T: 800-577-6717 · questions@geolytics.com
 
 | Directory | Source | Contents |
 |---|---|---|
-| `data/Geographies/` | [NHGIS](https://www.nhgis.org/) | 1990 and 2010 Census tract shapefiles for California (`CA_tract_1990.shp`, `CA_tract_2010.shp`) |
-| `data/IPUMS/` | [IPUMS USA](https://usa.ipums.org/) | 5% microdata 1980–2010 (`ipums_1980-0610_all.dta`); include wage, employment, transit mode variables |
-| `data/HousingDetails/` | [NHGIS](https://www.nhgis.org/) | Tract-level housing characteristics, 1990 and 2000 |
-| `data/LEHD/` | [US Census LEHD LODES](https://lehd.ces.census.gov/) | Origin-destination worker flows for California |
-| `data/Metro/` | [LA Metro](https://metro.net/) | Station locations, opening dates, and line geometries |
-| `data/NCDB/` | [Geolytics](https://geolytics.com/) | Neighborhood Change Database (1970–2000) |
-| `data/CTPP/` | [FHWA](https://www.fhwa.dot.gov/planning/census_issues/ctpp/) | Census Transportation Planning Products (commute flows) |
-| `data/SCAG/` | [SCAG](https://scag.ca.gov/) | Southern California land-use raster |
-| `data/KellerDeleuw/` | LA Metro / project | Pre-computed network travel time matrices |
-| `data/WageTransit/` | [IPUMS USA](https://usa.ipums.org/) | IPUMS extract with transit access variables |
+| `data/CTPP/1990/` | [BTS](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=JFD&Yv0x=D) | 1990 Census Transportation Planning Products |
+| `data/CTPP/2000/` | [BTS](https://www.transtats.bts.gov/DatabaseInfo.asp?QO_VQ=JGD&Yv0x=D) | 2000 Census Transportation Planning Products |
+| `data/Dynamap/` | CalTrans / ArcGIS | Travel time matrix from Dynamap Road Network |
+| `data/Geographies/` | [NHGIS](https://www.nhgis.org/) | CA tract shapefiles (1990, 2000, 2010) and subcounty shapefiles |
+| `data/HousingDetails/` | [NHGIS](https://www.nhgis.org/) | Tract and block-level housing characteristics, 1990 and 2000 |
+| `data/I105/` | [Caltrans / FHWA](https://gisdata-caltrans.opendata.arcgis.com/) | California highway shapefiles (CA_NHS, NHPNLine) |
+| `data/IPUMS/` | [IPUMS USA](https://usa.ipums.org/) | 5% microdata 1980–2010 (`ipums_1980-0610_all.dta`); wages, employment, transit |
+| `data/KellerDeleuw/` | Hand-transcribed | Proposed and PER rail line shapefiles from Kelker, Deleuw & Co. (1925) — used as instrumental variable |
+| `data/LEHD/` | [US Census LEHD LODES v7](https://lehd.ces.census.gov/data/) | CA origin-destination flows, 2002 (`ca_od_main_JT00_2002.csv`) and 2015 (`ca_od_main_JT00_2015.csv`) |
+| `data/Metro/` | [LA Metro GIS](https://developer.metro.net/gis-data/) | Rail line shapefiles, station shapefiles, right-of-way data |
+| `data/NCDB/` | [Geolytics](https://geolytics.com/) | Neighborhood Change Database — **not in public release** (see note above) |
+| `data/Ridership/` | LA Metro | Monthly ridership per line. Pre-2009 data requires a custom request to ServicePerformanceAnalysis@metro.net |
+| `data/SCAG/` | [SCAG](https://scag.ca.gov/) | Land-use shapefiles for SoCal, 1990/1993/2001/2005 (`SCAG_LU.*`) |
+| `data/ThreeShocks/` | Constructed | Route alignment shocks: Wilshire Blvd corridor, Green Line LAX terminus, Blue Line railroad alignment |
+| `data/TranspoDetails/` | [NHGIS](https://www.nhgis.org/) | Tract and block-level residential transportation characteristics, 1990 and 2000 |
+| `data/WageTransit/` | [IPUMS USA](https://usa.ipums.org/) | 5% samples 1980–2000 + 2008–2012 ACS for CA commuters aged 18–80 (`wagetransit.dta`) |
 
 The `output/` directory is also gitignored. All intermediate `.dta`, `.csv`, and
 `.RData` files are generated by the pipeline below.
@@ -67,11 +98,14 @@ severen/
 │   ├── build/        # 24 Stata + 8 R scripts: raw data → analytical datasets
 │   ├── analysis/     # 18 Stata + 9 R scripts: estimation, simulation, maps
 │   ├── welfare/      # 7 R scripts: GE equilibrium solver and counterfactuals
-│   └── tablecode/    # stata-tex table generation framework (see tablecode/README.md)
+│   └── tablecode/    # stata-tex table generation (see tablecode/README.md)
+├── graphhopper/      # Graphhopper routing engine files (JVM, OSM data, config)
 ├── tables/           # LaTeX table templates and filled results
 ├── figures/          # Output maps and figures
+├── results/          # Preliminary model results (called by analysis scripts)
 ├── notes/            # Extended analysis notes (psi_findings.md)
 ├── master.do         # Stata entry point — runs full build + analysis pipeline
+├── profile.do        # Environment settings — called automatically by master.do
 └── setup.do          # Stata package installer (run once)
 ```
 
@@ -79,56 +113,97 @@ severen/
 
 ## Running the full replication
 
+There are two paths depending on whether you are starting from raw data or from the
+intermediate analytical datasets.
+
+### Option A — Replicate from intermediate data (faster)
+
+Intermediate files in `output/` are provided separately
+(`output/output_main.tar.gz`, `output/output_other.tar.gz`). Once unpacked:
+
+1. Open `master.do` (which calls `profile.do` automatically)
+2. Execute **lines 57–81** of `master.do` (the analysis section)
+3. Open `code/welfare/index_rwelfarescripts.R`, set the `cdir` path, and run it
+
+### Option B — Replicate from raw data
+
+1. Open `code/build/index_rbuildscripts.R`, set `cdir` appropriately, and execute it
+2. Open `master.do` and execute **lines 19–48** (the build section)
+3. Follow Option A steps 2–3 above
+
+---
+
+## Pipeline details
+
 ### Step 1 — Install Stata packages (one-time)
 
 ```stata
 do setup.do
 ```
 
-### Step 2 — Build the data pipeline
+### Step 2 — Build the data pipeline (raw data path only)
 
 ```stata
-do master.do
+do master.do   // lines 19-48
 ```
 
-`master.do` runs 24 build scripts in sequence:
+Runs 24 build scripts in sequence: crosswalks → flow panels (CTPP and LEHD) →
+tract-level outcomes (wages, housing, treatment indicators, Bartik shocks, land use,
+transit variables) → combine and prep (GE model inputs, congestion routes,
+wage-transit, bootstrap weights).
 
-1. **Crosswalks** — 1990↔2000 tract concordances, subcounty definitions
-2. **Flow data** — CTPP and LEHD commuting flow panels (1990 and 2000 tract geographies)
-3. **Tract-level outcomes** — wages, employment, housing values, treatment indicators, land use, Bartik shocks, transit variables
-4. **Combine and prep** — merge flows with covariates; prep GE model inputs; congestion route data; wage-transit data; bootstrap weights
-
-Outputs land in `output/intermediate/`, `output/crosswalks/`, and the project root (`.dta` files). Runtime is several hours on the full sample.
+Outputs land in `output/intermediate/`, `output/crosswalks/`, and the project root.
+Runtime is several hours on the full sample.
 
 ### Step 3 — Econometric analysis
 
-`master.do` continues automatically into the analysis phase after the build. Key outputs:
+```stata
+do master.do   // lines 57-81
+```
 
-- **Tables 1–5** — commuting flow effects, congestion, labor and housing elasticities, structural λ estimates
-- **`output/welfare/la_data_2000_v202012.RData`** — GE model inputs (created by `prep_dataRwelfare.do`; required by all R welfare scripts)
-- **Table 6 / Table E1** — bootstrap welfare estimates
+Key outputs by table:
+
+| Table / Figure | Script |
+|---|---|
+| Figure 1 | `code/build/map_prep3.R` |
+| Figure 2 | `code/analysis/plot_wagetransit.do` |
+| Figure 3 | `code/analysis/plot_flowdensity_ptreatment.do` |
+| Table 1 (Panel A) | `code/analysis/flows_metroeffects.do` |
+| Table 1 (Panel B) | `code/analysis/flows_lehdthrough2015.do` |
+| Table 2 | `code/analysis/flows_congestion.do` |
+| Table 3 (Panels A–B) | `code/analysis/tracts_elasticities.do` |
+| Table 3 (Panel C) | `code/analysis/comparison_FEs_vs_wage.do` |
+| Table 4 | `code/analysis/tracts_elasticities.do` |
+| Table 5 | `code/analysis/estimates_lambdas.do` |
+| Table 6 | `code/welfare/run_welfare_main.R` + `run_welfare_bootstrap.R` |
+| Table E1 | `code/analysis/bootstrap_run.do` |
+| Table F1 | `code/analysis/gravity.do` |
+| Table H2 | `code/analysis/test_ncdbpretrends.do` |
+| Tables H7–H8 | `code/analysis/epsilon_shiftshareanalysis*.do` |
+| Tables H9–H12 | `code/analysis/estimates_lambdas.do` |
+| Table H13 | `code/welfare/run_welfare_extended.R` |
+
+Also produces `output/welfare/la_data_2000_v202012.RData` — GE model inputs required
+by all R welfare scripts.
 
 ### Step 4 — GE welfare analysis (R)
 
 ```r
+# Set cdir to your project root first
 source("code/welfare/index_rwelfarescripts.R")
 ```
 
-Runs the full general-equilibrium welfare model using the hat-algebra approach
-(Dekle, Eaton, and Kortum 2008). Requires `la_data_2000_v202012.RData` from Step 3.
-
+Runs the full general-equilibrium welfare model (hat-algebra, Dekle-Eaton-Kortum 2008).
 Main outputs:
 - Closed-city and open-city welfare gains from Metro Rail (~$94/person)
-- `output/welfare/psi_sensitivity.csv` — welfare across ψ ∈ [0.5, 4.0]
-- `output/welfare/faster_transit.csv` — counterfactual at speed multipliers 1.25×–3×
-- PDF/PNG figures for all GE results
+- PDF/PNG figures for all GE counterfactuals
 
 ---
 
 ## Extended analyses
 
-The following scripts extend the original paper. All require `la_data_2000_v202012.RData`
-(Step 3) to be present in `output/welfare/`. Run them after the main pipeline.
+The following scripts extend the original paper. All require
+`output/welfare/la_data_2000_v202012.RData` from Step 3.
 
 ### Housing supply elasticity (ψ) sensitivity
 
@@ -138,8 +213,9 @@ The following scripts extend the original paper. All require `la_data_2000_v2020
 Rscript code/analysis/make_coastal_split.R
 ```
 
-Produces `output/coastal_indicator.csv`: tract-level coastal distance, coastal indicator,
-land area (km²), and WGS84 centroids. Required by subsequent ψ scripts and Stata splits.
+Produces `output/coastal_indicator.csv`: tract-level coastal distance, coastal
+indicator, land area (km²), and WGS84 centroids. Required by subsequent ψ scripts
+and Stata splits.
 
 #### Partial-equilibrium spatial counterfactual
 
@@ -149,10 +225,7 @@ Rscript code/analysis/simulate_psi_counterfactual.R
 
 Calibrates tract-level housing supply costs (c_n) and amenities (A_n) from the 2000
 equilibrium at ψ₀ = 1.602, then solves a closed-city fixed-point under alternative ψ
-values with wages held fixed. Uses damped iteration (damp = 0.05) for numerical
-stability with ε = 2.18.
-
-Output: `output/welfare/psi_counterfactual.csv`
+values with wages held fixed. Output: `output/welfare/psi_counterfactual.csv`
 
 #### Full GE spatial simulation across ψ
 
@@ -160,12 +233,8 @@ Output: `output/welfare/psi_counterfactual.csv`
 Rscript code/analysis/simulate_ge_psi_spatial.R
 ```
 
-Runs `eqSolve_RemoveTransit()` (the complete Severen GE model) across
-ψ ∈ {0.5, 0.75, 1.0, 1.25, 1.602, 2.0, 3.0, 4.0} and extracts tract-level
-Q̂, Ŵ, N̂. Answers: *how does the spatial pattern of the transit welfare response
-change with ψ?*
-
-Output: `output/welfare/ge_psi_spatial.csv`
+Runs `eqSolve_RemoveTransit()` across ψ ∈ {0.5, 0.75, 1.0, 1.25, 1.602, 2.0, 3.0, 4.0}
+and extracts tract-level Q̂, Ŵ, N̂. Output: `output/welfare/ge_psi_spatial.csv`
 
 #### Monocentric city illustration
 
@@ -173,69 +242,59 @@ Output: `output/welfare/ge_psi_spatial.csv`
 Rscript code/analysis/simulate_monocentric_psi.R
 ```
 
-Textbook Alonso-Muth-Mills model with exponential CBD-distance demand.
-Illustrates the low-ψ (steep price gradient) vs. high-ψ (steep density gradient)
-mechanisms using synthetic data.
-
-Output: `output/welfare/monocentric_psi.csv`
+Textbook Alonso-Muth-Mills model illustrating low-ψ (steep price gradient) vs.
+high-ψ (steep density gradient) mechanisms. Output: `output/welfare/monocentric_psi.csv`
 
 #### Heterogeneous ψ IV estimates (Stata)
 
-Requires `powFEs.dta` and `output/coastal_indicator.csv` (from above).
+Requires `powFEs.dta` (Step 3) and `output/coastal_indicator.csv` (above).
 
 ```stata
 stata-mp -b do code/analysis/tracts_elasticities_coastal.do
 stata-mp -b do code/analysis/tracts_elasticities_density.do
 ```
 
-- **Coastal split**: Bartik instrument (F ≈ 0.2 for N ≈ 188 coastal tracts) is too
-  weak to be reliable; inland ψ ≈ 0.49 is the actionable result.
+- **Coastal split**: Bartik instrument is too weak for coastal tracts (F ≈ 0.2,
+  N ≈ 188); inland ψ ≈ 0.49 is the reliable result.
 - **Density split**: median split on 1990 homeowner density; both groups have adequate
   first stages (F > 10). High-density ψ < pooled ψ ≈ 0.46 < low-density ψ.
 
-See `notes/psi_findings.md` for a full summary of all ψ results.
+See `notes/psi_findings.md` for a full summary.
 
 ### Faster-transit counterfactuals
 
-#### Speed grid (1.25× to 3×)
-
 ```bash
+# Welfare, price map, and population sorting at 1.25×–3× speed
 Rscript code/analysis/simulate_faster_transit.R
-```
 
-Runs the full GE model at speed multipliers s ∈ {1.25, 1.5, 2.0, 3.0} by constructing
-`D̂[i,j] = exp(−λ_D00 × (s−1) × tt00[i,j] − λ_D02 × (s−1) × tt02[i,j])`.
-Produces welfare, spatial price maps, and population sorting figures.
-
-Output: `output/welfare/faster_transit.csv`, `output/welfare/faster_transit.pdf`
-
-#### Spatial map: population change at 20× speed
-
-```bash
+# Spatial map: population change at 20× speed
 Rscript code/analysis/map_faster_transit_20x.R
-```
 
-Two-panel ggplot2 map: full LA metro area + zoomed station corridor. Background tracts
-capped at ±15% to prevent palette compression; station tracts (n = 94) drawn as filled
-circles at full scale.
-
-Output: `output/welfare/map_faster_transit_20x.pdf/.png`
-
-#### Four-panel comparison: 2× vs 20×
-
-```bash
+# Four-panel comparison: population + price at 2× vs 20×
 Rscript code/analysis/map_faster_transit_compare.R
 ```
 
-Top row: residential population change at 2× and 20×. Bottom row: housing price
-change. Colour scale fixed to the 20× range for direct panel comparison.
-
-Output: `output/welfare/map_faster_transit_compare.pdf/.png`
-
-**Key result:** Even at 20× speed, corridor population share rises only from 7.9% to
+Key result: even at 20× speed, corridor population share rises only from 7.9% to
 10.6% of metro workers — because only 94/2,552 tracts (3.7%) are near stations.
-Welfare at 20× is ~$5,900/person but is almost entirely capitalised into land prices
-at station tracts.
+The welfare gain (~$5,900/person at 20×) is almost entirely capitalised into land
+prices at station tracts. Network expansion, not speed, is the binding constraint.
+
+---
+
+## Graphhopper
+
+The `graphhopper/` folder contains the files needed to spin up the Graphhopper routing
+virtual machine. Java (JVM) is required.
+
+To initiate: execute the contents of `./call.txt` in a terminal. This starts the JVM
+and routing engine using the SoCal OSM map data (`socal-latest.osm.pbf`) and
+configuration (`config-example.yml`). The R script `la_routingscript.R` then queries
+the engine and saves tract-to-tract travel time routes.
+
+> **Warning:** This process takes approximately **one week** to complete and produces
+> approximately **40 GB** of output in `output/routes/`. The route files are omitted
+> from the public release but are available on request. If you are not rebuilding
+> routes from scratch, use the pre-computed files from `output/output_other.tar.gz`.
 
 ---
 
@@ -247,14 +306,13 @@ The welfare model (`code/welfare/simcode_functions.R`) uses hat-algebra: it solv
 Two important limitations:
 
 1. **ψ counterfactuals**: Changing ψ alone with no demand shock produces trivial
-   Q̂ = Ŵ = N̂ = 1. The scripts in this repo answer "how does the response to a
-   specific transit shock change with ψ?" — not "what does LA look like under a
-   different ψ?" The latter requires re-estimating all structural parameters.
+   Q̂ = Ŵ = N̂ = 1. The scripts here answer "how does the transit removal response
+   change with ψ?" — not "what does LA look like under a different ψ?" The latter
+   requires re-estimating all structural parameters from scratch.
 
-2. **Coverage constraint**: The transit shock only affects OD pairs that cross the
-   Metro corridor (λ_D00, λ_D02 parameters). Making trains faster only benefits the
-   ~8% of commuters already using those corridors. Network expansion, not speed,
-   is the binding constraint for metro-wide welfare effects.
+2. **Coverage constraint**: The transit shock only affects OD pairs crossing the Metro
+   corridor (λ_D00, λ_D02 parameters). Faster trains only benefit the ~8% of commuters
+   already on those corridors. Network expansion dominates speed as a welfare driver.
 
 ---
 
