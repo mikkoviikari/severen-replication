@@ -111,29 +111,15 @@ severen/
 
 ---
 
-## Running the full replication
+## Running the replication
 
-There are two paths depending on whether you are starting from raw data or from the
-intermediate analytical datasets.
+The intended path is to replicate from the **intermediate analytical datasets**,
+which are distributed separately as `output/output_main.tar.gz` and
+`output/output_other.tar.gz`. Unpack both into `output/` before proceeding.
 
-### Option A — Replicate from intermediate data (faster)
-
-Intermediate files in `output/` are provided separately
-(`output/output_main.tar.gz`, `output/output_other.tar.gz`). Once unpacked:
-
-1. Open `master.do` (which calls `profile.do` automatically)
-2. Execute **lines 57–81** of `master.do` (the analysis section)
-3. Open `code/welfare/index_rwelfarescripts.R`, set the `cdir` path, and run it
-
-### Option B — Replicate from raw data
-
-1. Open `code/build/index_rbuildscripts.R`, set `cdir` appropriately, and execute it
-2. Open `master.do` and execute **lines 19–48** (the build section)
-3. Follow Option A steps 2–3 above
-
----
-
-## Pipeline details
+> If you need to rebuild from raw data, first run
+> `code/build/index_rbuildscripts.R` (set `cdir`) and then `master.do` lines 19–48
+> to regenerate the intermediate files, then continue with the steps below.
 
 ### Step 1 — Install Stata packages (one-time)
 
@@ -141,21 +127,10 @@ Intermediate files in `output/` are provided separately
 do setup.do
 ```
 
-### Step 2 — Build the data pipeline (raw data path only)
+### Step 2 — Econometric analysis
 
-```stata
-do master.do   // lines 19-48
-```
-
-Runs 24 build scripts in sequence: crosswalks → flow panels (CTPP and LEHD) →
-tract-level outcomes (wages, housing, treatment indicators, Bartik shocks, land use,
-transit variables) → combine and prep (GE model inputs, congestion routes,
-wage-transit, bootstrap weights).
-
-Outputs land in `output/intermediate/`, `output/crosswalks/`, and the project root.
-Runtime is several hours on the full sample.
-
-### Step 3 — Econometric analysis
+Open `master.do` (which automatically calls `profile.do` to set environment variables)
+and execute **lines 57–81**:
 
 ```stata
 do master.do   // lines 57-81
