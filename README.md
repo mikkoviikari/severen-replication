@@ -71,8 +71,9 @@ the project root:
 | `output_other.tar.gz` | `output/` | Additional intermediate files (crosswalks, route proximity, welfare inputs) |
 
 ```bash
-tar -xzf data.tar.gz
-tar -xzf output_main.tar.gz -C output/
+mkdir -p data output
+tar -xzf data.tar.gz         -C data/
+tar -xzf output_main.tar.gz  -C output/
 tar -xzf output_other.tar.gz -C output/
 ```
 
