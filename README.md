@@ -232,20 +232,26 @@ See `notes/psi_findings.md` for a full summary.
 ### Faster-transit counterfactuals
 
 ```bash
-# Welfare, price map, and population sorting at 1.25×–3× speed
+# Welfare, price map, and population sorting at multipliers 1.25×–3×
 Rscript code/analysis/simulate_faster_transit.R
 
-# Spatial map: population change at 20× speed
+# Spatial map: population change at multiplier 20× (extreme upper bound)
 Rscript code/analysis/map_faster_transit_20x.R
 
 # Four-panel comparison: population + price at 2× vs 20×
 Rscript code/analysis/map_faster_transit_compare.R
 ```
 
-Key result: even at 20× speed, corridor population share rises only from 7.9% to
-10.6% of metro workers — because only 94/2,552 tracts (3.7%) are near stations.
-The welfare gain (~$5,900/person at 20×) is almost entirely capitalised into land
-prices at station tracts. Network expansion, not speed, is the binding constraint.
+The counterfactual scales the structural commuting disutility parameters
+λ_D00 and λ_D02 — estimated from a DiD on binary Metro connectivity indicators
+— by multiplier s, applying (s−1) additional units of the observed commuting
+benefit to all connected OD pairs. It does not compute new travel times.
+
+Key result: doubling the estimated commuting benefit (s=2) raises welfare by
+$105/person. Welfare rises roughly linearly to $223/person at s=3. Gains are
+almost entirely capitalised into land prices at station tracts. The binding
+constraint is network coverage — only 94/2,552 tracts (3.7%) are near stations
+— not the magnitude of the commuting benefit per connected pair.
 
 ---
 
