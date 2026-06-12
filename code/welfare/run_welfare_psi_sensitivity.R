@@ -105,7 +105,7 @@ legend("topright", legend="Bootstrap 5–95%", fill=adjustcolor("steelblue",0.25
 # Panel B: $ welfare benefit
 plot(out$psi, out$dollar_benefit, type="b", pch=19, col="darkred",
      xlab=expression(psi ~ "(housing supply elasticity)"),
-     ylab="Welfare gain (USD per person)",
+     ylab="Welfare gain (USD millions, aggregate annual)",
      main="(b) Welfare benefit — dollar value",
      las=1)
 abline(v=1.602, lty=2, col="grey50")

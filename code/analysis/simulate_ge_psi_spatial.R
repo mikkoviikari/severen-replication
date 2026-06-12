@@ -85,7 +85,7 @@ results_list <- lapply(psi_grid, function(psi_val) {
   )
   if (is.null(res)) return(NULL)
 
-  cat(sprintf("  welfare: %.4f%% ($%.2f/person)\n",
+  cat(sprintf("  welfare: %.4f%% ($%.2fM aggregate annual)\n",
               100*res$closed.percentbenefit, res$closed.dollarbenefit))
   cat(sprintf("  open city pop gain: %.4f%%\n", 100*res$open.popgain))
 
@@ -241,7 +241,7 @@ legend("topright", legend=paste("psi =", psi_grid),
 par(mar=c(4.5, 4.5, 3.5, 4.5))
 plot(smry$psi, smry$dollar_benefit, type="b", pch=19, col="steelblue", lwd=2,
      xlab=expression(psi ~ "(housing supply elasticity)"),
-     ylab="Transit welfare gain ($/person)",
+     ylab="Transit welfare gain ($M, aggregate annual)",
      main="(d) Welfare and spatial dispersion vs psi", las=1)
 abline(v=1.602, lty=2, col="grey50")
 
@@ -252,7 +252,7 @@ axis(4, col.axis="darkred", col="darkred", las=1)
 mtext("SD of price response (log pts)", side=4, line=3, col="darkred", cex=0.8)
 
 legend("topright",
-       legend=c("Transit welfare ($/person)", "SD of price response"),
+       legend=c("Transit welfare ($M, aggregate annual)", "SD of price response"),
        col=c("steelblue","darkred"), pch=c(19,17), lwd=2, bty="n", cex=0.8)
 
 dev.off()

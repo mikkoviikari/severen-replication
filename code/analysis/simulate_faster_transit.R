@@ -133,7 +133,7 @@ results_list <- lapply(speed_grid, function(s) {
   )
   if (is.null(res)) return(NULL)
 
-  cat(sprintf("  welfare: %.4f%% ($%.2f/person)  |  open-city pop gain: %.4f%%\n",
+  cat(sprintf("  welfare: %.4f%% ($%.2fM aggregate annual)  |  open-city pop gain: %.4f%%\n",
               100 * res$closed.percentbenefit,
               res$closed.dollarbenefit,
               100 * res$open.popgain))
@@ -222,7 +222,7 @@ barplot(smry_nob$welfare_dollar,
         col       = pal[-1],
         border    = NA,
         xlab      = "Speed multiplier",
-        ylab      = "Welfare gain (USD per person)",
+        ylab      = "Welfare gain ($M, aggregate annual)",
         main      = "(a) Transit welfare gain vs speed",
         las       = 1)
 # Mark baseline welfare (current transit)

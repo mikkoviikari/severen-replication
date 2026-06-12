@@ -56,7 +56,7 @@ run_speed <- function(s) {
   pi.0  <- cf / sum(cf, na.rm=TRUE)
   res   <- eqSolver(N, pi.0, W.0, Q.0, A.hat, BED, C.hat,
                     mats$timemat, p, t.c, skipopen=TRUE, addmode=TRUE)
-  cat(sprintf("  welfare $%.0f/person\n", res$closed.dollarbenefit))
+  cat(sprintf("  welfare $%.0fM (aggregate annual)\n", res$closed.dollarbenefit))
   list(Q.hat=res$Q.hat, N.hat=res$N.hat,
        welfare=res$closed.dollarbenefit, speed=s)
 }
@@ -113,7 +113,7 @@ one_panel <- function(df, var, cap, pal_name, legend_title, speed_val, welfare) 
              shape=8, size=3.5, colour="black", stroke=1.2) +
     annotate("text", x=CBD_lon+0.022, y=CBD_lat+0.03,
              label="CBD", size=3, fontface="bold") +
-    labs(subtitle=sprintf("%dx speed  |  $%.0f/person", speed_val, welfare),
+    labs(subtitle=sprintf("%dx speed  |  $%.0fM aggregate annual", speed_val, welfare),
          x=NULL, y=NULL) +
     coord_fixed(ratio=asp) +
     theme_minimal(base_size=10) +

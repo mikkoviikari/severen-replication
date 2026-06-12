@@ -67,7 +67,7 @@ res <- eqSolver(N, pi.0, W.0, Q.0, A.hat, BED.hat, C.hat,
                 times=mats$timemat, p=p, t=t.ctrl,
                 skipopen=TRUE, addmode=TRUE)
 
-cat(sprintf("Welfare: $%.1f/person\n", res$closed.dollarbenefit))
+cat(sprintf("Welfare: $%.1fM (aggregate annual)\n", res$closed.dollarbenefit))
 
 ## ── Assemble tract data ───────────────────────────────────────────────────────
 map_df <- tract_df %>%
@@ -99,7 +99,7 @@ bg_cap <- 0.15
 asp    <- 1 / cos(34.05 * pi / 180)   # lon/lat aspect for LA
 
 subtitle_txt <- sprintf(
-  "Full GE model  |  Welfare: $%.0f/person  |  Circles = station tracts (n=%d, avg %+.0f%%)",
+  "Full GE model  |  Welfare: $%.0fM aggregate annual  |  Circles = station tracts (n=%d, avg %+.0f%%)",
   res$closed.dollarbenefit, sum(map_df$near_station),
   100 * mean(exp(map_df$lN_hat[map_df$near_station == 1]) - 1, na.rm=TRUE))
 
