@@ -1,0 +1,758 @@
+% ============================================================
+%  Housing Supply Elasticity and Transit Welfare:
+%  A Replication and Extension of Severen (2021)
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx}          % Times-style body font
+\usepackage{helvet}            % Helvetica for headings (used via \textsf)
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage[round,authoryear]{natbib}
+\usepackage[hidelinks,
+            colorlinks=true,
+            linkcolor=NavyBlue,
+            citecolor=NavyBlue,
+            urlcolor=NavyBlue]{hyperref}
+\usepackage{titlesec}
+\usepackage{abstract}
+\usepackage{enumitem}
+\usepackage{parskip}
+
+% ── Colours ─────────────────────────────────────────────────
+\definecolor{NavyBlue}{HTML}{2E6DA4}
+\definecolor{LightGrey}{HTML}{F2F2F2}
+\definecolor{MidGrey}{HTML}{D9D9D9}
+\definecolor{RuleGrey}{HTML}{AAAAAA}
+
+% ── Section heading style ────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\sffamily\color{NavyBlue}}
+  {\thesection}{1em}{}[\vspace{-4pt}\textcolor{NavyBlue}{\rule{\linewidth}{0.4pt}}]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\sffamily\color{black!70}}
+  {\thesubsection}{1em}{}
+
+\titlespacing{\section}{0pt}{18pt}{6pt}
+\titlespacing{\subsection}{0pt}{12pt}{4pt}
+
+% ── Caption style ────────────────────────────────────────────
+\captionsetup{
+  font=small, labelfont=bf,
+  justification=justified, singlelinecheck=false
+}
+
+% ── Spacing ──────────────────────────────────────────────────
+\setstretch{1.15}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{7pt}
+\setlength{\emergencystretch}{2em}
+
+% ── Table column types ───────────────────────────────────────
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+% ── Shaded row command ───────────────────────────────────────
+\newcommand{\shaderow}{\rowcolor{LightGrey}}
+
+% ── Footnote style for tables ────────────────────────────────
+\newcommand{\tablenote}[1]{%
+  \vspace{4pt}
+  {\small\textit{Notes:} #1}%
+}
+
+% ============================================================
+\begin{document}
+
+% ── Title block ─────────────────────────────────────────────
+\begin{titlepage}
+  \vspace*{3cm}
+  {\sffamily\Large\bfseries\color{NavyBlue}
+    Housing Supply Elasticity and Transit Welfare:\\[6pt]
+    A Replication and Extension of Severen (2021)}
+
+  \vspace{1.2cm}
+  {\large Marko Ikävalko \& Mikko Viikari}
+
+  \vspace{0.4cm}
+  {\normalsize May 2026}
+
+  \vspace{2cm}
+  \noindent\textcolor{NavyBlue}{\rule{\linewidth}{1pt}}
+
+  \vspace{1.2cm}
+  \begin{abstract}
+  \noindent
+  \citet{severen2021} estimates the general-equilibrium welfare effects of the
+  Los Angeles Metro Rail network.  The paper finds commuting flows rose
+  11--16\,\% between station-adjacent census-tract pairs and derives an
+  aggregate welfare gain of roughly \$94 million per year (our replication:
+  \$93.55 million), holding the city-wide inverse housing supply elasticity
+  $\psi$ at its pooled estimate of 1.602 (a supply elasticity of
+  $1/\psi \approx 0.62$).  We replicate the full Severen pipeline and extend the
+  analysis in two directions.  First, we attempt to estimate $\psi$ separately
+  for geographic sub-regions of the LA metro area (by coastal proximity, density
+  quartile, and county group), motivated by the substantial spatial variation in
+  local housing markets.  The Bartik shift-share instrument proves too weak for
+  sub-regional identification: first-stage $F$-statistics fall well below
+  conventional thresholds in every partition tried (KP $F < 5$, often $< 1$),
+  against the paper's pooled KP $F \approx 12$.  Second, unable to obtain
+  reliable sub-regional estimates, we vary $\psi$ over a wide range in the
+  calibrated GE model.  We find the aggregate welfare estimate is essentially
+  invariant to $\psi$: across a 5$\times$ range (0.75--4.0), welfare moves by
+  only \$0.33 million (0.35\,\%).  This is expected for a small intervention in
+  a car-dominated city, where the transit-induced demand shock near stations is
+  too modest for housing supply conditions to affect aggregate welfare ---
+  though, as we discuss, $\psi$ still governs the \emph{incidence} of the gains.
+  ``Amplified-connectivity'' counterfactuals confirm that larger commuting
+  benefits have limited impact: doubling the commuting disutility reduction
+  associated with Metro connectivity adds only \$105 million per year in
+  aggregate welfare.
+
+  \medskip\noindent
+  \textbf{Keywords:} transit infrastructure, general equilibrium, housing supply
+  elasticity, welfare analysis, Los Angeles
+  \end{abstract}
+
+  \vfill
+\end{titlepage}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Introduction}
+\label{sec:intro}
+
+Urban transit investment is among the most capital-intensive interventions
+available to city governments.  Evaluating whether such investments are
+welfare-improving requires a framework that accounts not only for the direct
+benefits to commuters but also for the general-equilibrium adjustments in labour
+and housing markets that follow.  \citet{severen2021} provides one of the most
+complete such evaluations to date, applying a quantitative spatial model to the
+1990--2002 build-out of the Los Angeles Metro Rail network.
+
+The paper treats housing supply conditions as a single city-wide constant: the
+inverse housing supply elasticity $\psi$, estimated at 1.602 using a Bartik
+shift-share instrument (implying a housing supply elasticity of
+$1/\psi = 0.624$, i.e., inelastic supply).  This is a natural baseline, but it
+is a strong assumption: housing markets in the five-county LA metro area vary
+enormously across coastal and inland sub-markets, across density gradients from
+dense urban cores to low-density suburbs, and across counties with very
+different zoning regimes.  If $\psi$ varies meaningfully across the city, and if
+Metro Rail stations happen to be located in areas with systematically different
+supply conditions, the aggregate welfare estimate could mask important
+heterogeneity in who captures the gains from transit investment.
+
+Our starting hypothesis was that housing supply conditions are a first-order
+determinant of the incidence of transit benefits.  Near stations with inelastic
+supply, demand increases are capitalised into land prices and captured by
+existing landowners; near stations with elastic supply, housing quantities adjust
+and the benefits are spread more broadly.  Understanding which regime prevails
+matters for both efficiency and distributional assessments of transit policy.
+
+We extend the Severen (2021) replication in two directions.  The first is an
+attempt to estimate $\psi$ separately for geographic sub-regions of the LA metro
+area, splitting the sample by coastal proximity, 1990 population density
+quartile, and county group.  The second, motivated by the failure of the first,
+is a systematic sensitivity analysis varying $\psi$ across a wide range in the
+calibrated GE model.
+
+Our key findings are as follows.  The Bartik instrument does not have enough
+variation within sub-regions to separately identify $\psi$: first-stage
+$F$-statistics fall well below 5 in every geographic partition we try.  The
+paper's own pooled first stage is moderately strong (Kleibergen--Paap
+$F = 12.3$ in the preferred specification, though between 7 and 9 in others),
+so while the pooled estimate is adequately identified, there is little power to
+spare for sub-sample analysis.  Turning to the sensitivity analysis, we find
+that the aggregate welfare gain from Metro Rail is almost completely insensitive
+to $\psi$.  Across a 5$\times$ range of $\psi$ (0.75 to 4.0), the welfare gain
+moves by only \$0.33 million --- a 0.35\,\% variation around the \$93.55 million
+baseline.  We show that this insensitivity is a direct consequence of the scale
+of the intervention and of the closed-city welfare measure: Metro Rail is a
+small shock in a car-dominated city, and the price adjustments that $\psi$
+governs are largely transfers within the city rather than aggregate gains.
+
+We also present ``amplified-connectivity'' counterfactuals showing that scaling
+up the estimated commuting benefit of Metro connectivity raises welfare roughly
+linearly in the multiplier.  At $2\times$ the baseline benefit, aggregate
+welfare rises by \$105 million per year.  This pattern is consistent with
+network coverage --- only 4\,\% of tracts lie near stations --- rather than the
+magnitude of the per-pair commuting benefit being the binding constraint on
+Metro Rail's welfare impact, although we note that confirming this would require
+a counterfactual that expands coverage directly, which we do not simulate.
+
+The remainder of this paper is organised as follows.  Section~\ref{sec:framework}
+describes the Severen (2021) framework.  Section~\ref{sec:methods} describes our
+modifications and methods.  Section~\ref{sec:results} presents results.
+Section~\ref{sec:conclusion} concludes.
+
+% ============================================================
+\section{The Severen (2021) Framework}
+\label{sec:framework}
+
+\subsection{Setting and data}
+
+\citet{severen2021} studies the commuting, labour-market, and housing-market
+effects of the Los Angeles Metro Rail network, which opened in three phases: the
+Blue Line (downtown LA to Long Beach) in 1990, and the Green and Red Lines in
+1993--2000.  The analysis covers 2,552 census tracts in the five-county LA
+metropolitan area (Los Angeles, Orange, Riverside, San Bernardino, and Ventura
+counties) over the period 1990--2002.
+
+The main data sources are: (i)~the 1990 and 2000 decennial censuses for
+commuting flows between home and work tracts; (ii)~the Longitudinal
+Employer-Household Dynamics (LEHD) database extended through 2015 for
+robustness; (iii)~the Neighbourhood Change Database (NCDB) for pre-trend tests;
+and (iv)~GIS-computed travel times between all $2{,}552\times2{,}552$ tract
+pairs under observed and counterfactual transit networks.
+
+\subsection{Commuting flow estimates}
+
+The paper estimates a difference-in-differences specification for bilateral
+commuting flows.  The treatment indicator is an indicator for whether both the
+home tract and the work tract contain (or lie within 250\,m or 500\,m of) a
+Metro station.  Identification rests on the parallel pre-trends assumption, which
+is supported by the absence of significant pre-1990 trends in wages or housing
+values for station-adjacent tracts relative to control tracts.
+
+The paper's preferred estimates show that flows between tract pairs where both
+tracts contain a station rose by 11--16\,\%.  Our replication of the gravity
+specification obtains a both-station effect of 10.0 log points (SE 3.8), stable
+across eight progressively tighter geographic samples and confirmed by a Poisson
+pseudo-maximum-likelihood (PPML) specification; adding the proximity ring within
+250\,m raises the combined estimated effect to approximately 17.6\,\%.
+
+\subsection{Structural elasticities}
+
+To translate the reduced-form flow estimates into welfare-relevant parameters,
+the paper estimates four structural elasticities using a Bartik shift-share IV
+strategy.  The housing supply parameter $\psi$ is the most consequential.  It is
+estimated by an IV regression of the change in housing prices
+$(\Delta\ln P_{it})$ on the change in housing density $(\Delta\ln N_{it})$,
+instrumenting density with a shift-share demand shock based on the 1990 industry
+mix interacted with national industry-level employment growth.  The preferred
+estimate is $\psi = 1.602$ (SE 0.453).  Note that $\psi$ is an \emph{inverse}
+elasticity --- the slope of price on quantity --- so the implied housing supply
+elasticity is $1/\psi = 0.624$: housing supply in LA is inelastic.
+
+The first stage of the preferred specification has a Cragg--Donald $F$-statistic
+of 11.5 and a Kleibergen--Paap $F$-statistic of 12.3; alternative specifications
+in the paper's Table~4 range from 5.5 to 12.4.  The paper's bootstrap 95\,\%
+confidence interval for $\psi$ is $[1.01, 3.67]$.  An internal consistency test
+--- whether $\psi$ estimated from housing consumption and from residential land
+use are consistent --- returns a $p$-value of 0.616, supporting the structural
+interpretation.
+
+\subsection{General-equilibrium welfare model}
+
+The welfare calculation uses the hat-algebra approach of
+\citet{dekle2008global}, extended to a multi-location setting with endogenous
+commuting.  Workers choose a home and work location by drawing Fréchet-distributed
+idiosyncratic preference shocks, giving rise to a gravity equation for commuting
+flows:
+%
+\begin{equation}
+  \pi_{ij} \;\propto\;
+  \left(\frac{B_i\,W_j\,Q_i^{\,\zeta-1}}{\delta_{ij}}\right)^{\!\varepsilon},
+  \label{eq:gravity}
+\end{equation}
+%
+where $W_j$ is the wage at workplace tract $j$, $Q_i$ is the housing price at
+residence tract $i$, $B_i$ captures residential amenities, $\delta_{ij}$ is the
+bilateral commuting cost, $1-\zeta$ is the housing expenditure share, and
+$\varepsilon$ is the Fréchet shape parameter governing the dispersion of
+idiosyncratic location preferences.  Importantly, $\varepsilon$ is
+\emph{estimated} in the paper (at $\approx 2.18$) using the same shift-share IV
+strategy, rather than calibrated from the literature; the labour supply
+first stage is in fact the weaker of the paper's IV designs (KP $F$ of 8.0
+in the preferred specification).  The housing market clears at each tract with
+inverse supply elasticity $\psi$.  The model is calibrated to the observed 2000
+LA equilibrium and asked: by how much does welfare change when the observed
+transit improvements are removed?  The answer --- solved by fixed-point
+iteration converging in 6--11 iterations --- is the welfare gain attributable to
+Metro Rail.  The baseline result is \textbf{\$93.55 million per year in
+aggregate} (closed-city, 2016 dollars), matching the \$94 million reported in
+the paper.\footnote{The dollar figure is the model's percentage welfare gain
+(0.044\,\%) scaled by mean annual earnings (\$31{,}563) and the 6.73 million
+workers in the five-county area.  It corresponds to roughly \$14 per worker per
+year.}  This is the figure we take as our benchmark throughout.
+
+% ============================================================
+\section{Modifications and Methods}
+\label{sec:methods}
+
+\subsection{Motivation: heterogeneous housing supply}
+
+\citet{severen2021} estimates a single pooled $\psi$ for the five-county LA metro
+area.  The implicit assumption is that housing supply elasticity does not vary
+systematically with station proximity or with the geographic characteristics of
+the sub-market in which a station is located.  This assumption is strong:
+coastal tracts face stricter development constraints than inland tracts;
+already-dense central-city tracts have less room for upward densification than
+low-density suburban tracts; and LA County faces very different zoning conditions
+than Riverside or San Bernardino counties.
+
+If $\psi$ is systematically \emph{higher} near stations --- supply more
+inelastic, e.g.\ because stations were placed in already-dense,
+supply-constrained areas --- the paper's aggregate welfare estimate understates
+the extent to which transit benefits are capitalised into land values rather
+than shared broadly.  Understanding the distribution of $\psi$ across LA's
+sub-markets therefore matters for both efficiency and distributional
+assessments of the Metro Rail programme.
+
+\subsection{Attempted sub-regional estimation}
+\label{subsec:subreg}
+
+We attempt to estimate $\psi$ separately for three types of geographic
+sub-regions, using the same Bartik IV specification as the original paper:
+
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+  \item \textbf{Coastal vs.\ inland.}  Tracts within 5\,km of the Pacific
+    coastline versus all other tracts (296 coastal tracts,
+    $\approx$2,257 inland).  Coastal distances are computed from a
+    1:50\,000 Natural Earth coastline using California Albers projection.
+  \item \textbf{Density quartiles.}  Tracts are ranked by 1990 homeowners
+    per km$^2$ and split at the median (binary) and into quartiles.
+    The prior is that already-dense tracts face less elastic supply
+    (higher $\psi$) than low-density tracts.
+  \item \textbf{County groups.}  A \emph{core} group (Los Angeles and Orange
+    counties: dense, heavily zoned) versus a \emph{fringe} group (Riverside,
+    San Bernardino, and Ventura counties: lower density and more
+    developable land).  Both groups are large and industrially diverse,
+    so the Bartik instrument was expected to retain adequate within-group
+    variation.
+\end{itemize}
+
+Each specification uses the same IV as the original paper (the leave-one-out
+Bartik employment shock $z_{it}$), restricts to the estimation sample
+(\texttt{tc\_hval}~$= 0$), and weights by 1990 homeowners.
+
+\subsection{Identification failure: instrument weakness}
+\label{subsec:weakness}
+
+Every sub-regional split encounters the same problem: the Bartik instrument
+loses power when the sample is partitioned.  Table~\ref{tab:subreg} reports the
+Kleibergen--Paap Wald $F$-statistic for each split.  The paper's pooled first
+stage (KP $F = 12.3$ in the preferred specification) is moderately strong, and
+our inland specification --- which retains $\approx$93\,\% of tracts and so
+nearly proxies the full sample --- achieves KP $F = 9.89$.  But every genuine
+partition falls to $F < 5$, and the coastal tracts, Density Q1, and the fringe
+counties individually fall to $F < 1$.
+
+The root cause is that the Bartik instrument derives its power from
+cross-industry variation in employment growth interacted with the pre-period
+industry mix.  When the sample is restricted to a geographic sub-area, the
+effective number of tracts drops substantially, reducing the cross-sectional
+variation available to identify the supply curve.  The coastal split is the
+extreme case: with only 188 tracts, the instrument is essentially uninformative
+(KP $F = 0.18$).
+
+This exercise also calibrates how much identifying power the pooled design has
+to spare: not much.  With KP $F$ statistics between roughly 7 and 12 across the
+paper's own specifications and a wide bootstrap confidence interval for $\psi$
+($[1.01, 3.67]$), the pooled estimate is adequately but not overwhelmingly
+identified --- and there is clearly no surplus power for the sub-regional
+heterogeneity analysis we attempted.
+
+\subsection{GE sensitivity analysis}
+\label{subsec:sensitivity}
+
+Since sub-regional estimation is infeasible, we vary $\psi$ across a grid
+spanning $0.5$ to $4.0$ and re-solve the full Severen GE model at each grid
+point.  Because $\psi$ is an inverse elasticity, this grid spans highly
+\emph{elastic} supply at the low end ($\psi = 0.5$ implies a supply elasticity
+of $1/\psi = 2.0$, Sun Belt-type) to very \emph{inelastic} supply at the high
+end ($\psi = 4.0$ implies $1/\psi = 0.25$, San Francisco-type).  All other
+parameters are held at the paper's baseline values.  At each $\psi$ we verify
+that:
+%
+\begin{itemize}[leftmargin=1.5em, itemsep=2pt]
+  \item the contraction condition for the fixed-point iteration holds (largest
+    eigenvalue of the transition matrix $< 1$);
+  \item closed-city and open-city equilibria converge (typically in 6--11
+    iterations to a tolerance of $10^{-5}$).
+\end{itemize}
+%
+The eigenvalue ranges from 0.778 ($\psi = 0.5$) to 0.951 ($\psi = 4.0$), so the
+iteration converges stably throughout.  (Stability of the iteration is distinct
+from global uniqueness of the equilibrium; the model's separate parameter
+condition for uniqueness is also satisfied at every grid point.)
+
+\subsection{``Amplified-connectivity'' counterfactuals}
+\label{sec:faster_transit}
+
+As a complementary exercise, we ask how welfare would change if Metro Rail
+generated a larger commuting benefit than actually observed (e.g.\ through
+faster or more reliable service).
+
+The commuting effect enters the model through the pair-specific bilateral
+utility shifter $D_{ij}$.  In the hat-algebra counterfactual framework, the
+change in $D_{ij}$ is governed by the estimated commuting parameters
+$\lambda^{D}_{00}$ and $\lambda^{D}_{02}$, recovered from a
+difference-in-differences regression of log bilateral commuting flows on binary
+connectivity indicators $T^{00}_{ij}$ and $T^{02}_{ij}$---equal to one when both
+home tract $i$ and workplace tract $j$ lie within 500\,m of a station of the
+respective Metro line---controlling for OD-pair, residence-tract-by-year, and
+workplace-tract-by-year fixed effects.
+
+For multiplier $s \geq 1$, the counterfactual adjusts $D_{ij}$ as:
+%
+\begin{equation}
+  \hat{D}_{ij}
+  \;=\;
+  \exp\!\Bigl(
+    \lambda^{D}_{00}\,(s-1)\,T^{00}_{ij}
+    \;+\;
+    \lambda^{D}_{02}\,(s-1)\,T^{02}_{ij}
+  \Bigr),
+  \label{eq:Dhat}
+\end{equation}
+%
+where $\lambda^{D}_{00} = 0.149$ and $\lambda^{D}_{02} = 0.128$.  Since both
+parameters are positive, $\hat{D}_{ij} > 1$ for Metro-connected pairs at
+$s > 1$, increasing their pair-specific commuting utility.  At $s = 1$ the
+expression equals one (no change); at $s = 2$, each connected pair receives
+$(s-1) = 1$ additional unit of the estimated commuting utility gain---doubling
+the improvement attributed to Metro.  For OD pairs that are not
+Metro-connected ($T^{00}_{ij} = T^{02}_{ij} = 0$ --- over 99.9\,\% of pairs,
+carrying $\approx$99.2\,\% of commuters), $\hat{D}_{ij} = 1$ regardless of $s$.
+
+It is worth noting that every Metro-connected pair receives the same
+proportional utility shift, independent of actual trip length or actual travel
+time, because the estimated $\lambda^D$ parameters capture a flat average
+treatment effect.  The GE model is re-solved in full at each $s$, so downstream
+price, wage, and population adjustments are endogenous.  This counterfactual
+does not literally test trains running at a physically higher speed; it asks
+what equilibrium would result if Metro connectivity raised commuting utility by
+$s$ times its estimated magnitude.  We accordingly refer to $s$ as an
+amplification multiplier, retaining ``speed'' only as informal shorthand.
+
+Starting from the 2000 calibrated baseline, we add $(s-1)$ additional units of
+the estimated benefit to all Metro-connected origin--destination pairs.  At
+$s=2$ the commuting disutility reduction is twice its estimated magnitude.  The
+GE model is re-solved at each multiplier and the incremental welfare gain on top
+of the \$93.55 million baseline is recorded.
+
+Re-solving the GE model across multipliers $s \in \{1.25, 1.5, 2, 3\}$ yields
+welfare gains of \$25--\$223 million per year, increasing approximately linearly
+in $s$.  This pattern is consistent with network coverage---only 94 of 2{,}552
+tracts (4\,\%) lie near a station---rather than the magnitude of the per-pair
+commuting benefit being the binding constraint on Metro Rail's welfare impact.
+We note, however, that this comparison is indirect: we amplify the benefit on
+existing corridors but do not simulate an expansion of the network itself, which
+would be the direct test.
+
+% ============================================================
+\section{Results}
+\label{sec:results}
+
+\subsection{Aggregate welfare is insensitive to $\psi$}
+\label{subsec:res_sensitivity}
+
+Table~\ref{tab:psi_sensitivity} reports the closed-city welfare gain from Metro
+Rail across the $\psi$ grid.  The headline finding is that aggregate welfare is
+essentially invariant to $\psi$.  Moving from $\psi = 0.75$ to $\psi = 4.0$ ---
+a more than $5\times$ increase --- reduces the welfare estimate by only \$0.33
+million, from \$93.71 million to \$93.38 million.  This represents a 0.35\,\%
+variation around the paper's baseline of \$93.55 million.  Over the full grid
+(0.5 to 4.0), the variation is \$0.41 million.
+
+The relationship is monotone: welfare is slightly \emph{higher} under more
+elastic supply ($\psi = 0.5$, supply elasticity $2.0$: \$93.79 million) than
+under more inelastic supply ($\psi = 4.0$, supply elasticity $0.25$: \$93.38
+million).  The intuition is that with elastic supply, housing quantities near
+stations can expand, letting more households take up the improved commutes;
+with inelastic supply, more of the local adjustment is absorbed by price
+increases, which in the closed-city model are transfers to incumbent landowners
+rather than aggregate gains.  Either way the aggregate effect is tiny.  The
+open-city population gain varies somewhat more (0.102\,\% at $\psi = 0.5$ down
+to 0.081\,\% at $\psi = 4.0$): more elastic supply accommodates more
+in-migration in response to the same transit improvement.
+
+\begin{table}[H]
+\centering
+\caption{Welfare sensitivity to the inverse housing supply elasticity ($\psi$)}
+\label{tab:psi_sensitivity}
+\smallskip
+\begin{tabular}{L{3.5cm} C{3.5cm} C{3cm} C{3cm}}
+\toprule
+\textbf{$\psi$} & \textbf{Closed-city welfare (\$M/year)} & \textbf{Gain (\% of income)} & \textbf{Open-city pop.\ gain} \\
+\midrule
+\shaderow 0.50            & \$93.79  & 0.0442\%  & 0.102\% \\
+         0.75            & \$93.71  & 0.0441\%  & 0.097\% \\
+\shaderow 1.00            & \$93.65  & 0.0441\%  & 0.093\% \\
+         1.25            & \$93.60  & 0.0441\%  & 0.091\% \\
+\shaderow 1.50            & \$93.56  & 0.0440\%  & 0.089\% \\
+\textbf{1.602 (baseline)} & \textbf{\$93.55}  & \textbf{0.0440\%}  & \textbf{0.088\%} \\
+\shaderow 1.75            & \$93.53  & 0.0440\%  & 0.087\% \\
+         2.00            & \$93.50  & 0.0440\%  & 0.086\% \\
+\shaderow 2.50            & \$93.46  & 0.0440\%  & 0.084\% \\
+         3.00            & \$93.43  & 0.0440\%  & 0.083\% \\
+\shaderow 4.00            & \$93.38  & 0.0440\%  & 0.081\% \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\tablenote{GE model re-solved at each $\psi$ value; all other parameters held at
+\citet{severen2021} baseline.  Baseline row in bold.  Welfare is aggregate
+annual welfare for the five-county area in millions of 2016 dollars.  ``Gain
+(\% of income)'' is the model's closed-city percentage welfare benefit
+(compensating variation as a share of income).  Lower $\psi$ corresponds to more
+elastic housing supply.  Source: \texttt{run\_welfare\_psi\_sensitivity.R}.}
+\end{table}
+
+\subsection{Sub-regional $\psi$ estimates: instrument weakness}
+\label{subsec:res_subreg}
+
+Table~\ref{tab:subreg} reports the sub-regional $\psi$ point estimates and
+first-stage $F$-statistics.  The pattern is unambiguous: every geographic
+partition that reduces the sample substantially pushes the Kleibergen--Paap
+$F$-statistic below the conventional threshold of 10, and several produce $F <
+1$.  The coastal split, with only 188 tracts, is completely uninformative ($F =
+0.18$); the $\psi$ point estimate of 1.49 has a standard error of 5.72 and is
+statistically indistinguishable from any value.  Even the county-group splits,
+designed to preserve within-group industry diversity, produce $F$-statistics of
+3.24 (core) and 1.93 (fringe).
+
+The most nearly reliable sub-regional estimate is the inland specification
+($\hat{\psi} = 0.49$, SE 0.17, KP $F = 9.89$), which proxies the full sample
+because 93\,\% of tracts are inland.  Notably, this estimate is substantially
+\emph{below} the paper's pooled $\psi = 1.602$, and the density-quartile
+specifications where the instrument is marginally adequate (Q2, Q4) give
+estimates in the range 0.54--0.59, also below 1.602.  Recalling that $\psi$ is
+an inverse elasticity, lower values mean \emph{more elastic} housing supply: if
+these marginally identified estimates were taken at face value, housing supply
+in LA would be more elastic than the paper's pooled estimate implies.  Given
+Section~\ref{subsec:res_sensitivity}, however, the aggregate welfare estimate
+would be essentially unchanged in that case.
+
+\begin{table}[H]
+\centering
+\caption{Sub-regional inverse housing supply elasticity ($\psi$) estimates}
+\label{tab:subreg}
+\smallskip
+\begin{tabular}{L{6cm} C{1.6cm} C{1.6cm} C{1.6cm} C{1.8cm}}
+\toprule
+\textbf{Sub-region} & \textbf{$N$ tracts} & \textbf{$\hat{\psi}$} & \textbf{SE} & \textbf{KP $F$} \\
+\midrule
+\shaderow Full sample (pooled, Severen) & 2,175 & 1.602 & 0.453 & 12.3 \\
+Core: LA + Orange Co. & $\approx$1,850 & 0.170 & 0.097 & 3.24 \\
+\shaderow Fringe: Riverside + SB + Ventura & $\approx$590 & $-$0.650 & 0.489 & 1.93 \\
+Coastal ($<$5\,km Pacific) & 188 & 1.488 & 5.716 & 0.18 \\
+\shaderow Inland ($\geq$5\,km Pacific) & $\approx$2,254 & 0.486 & 0.169 & 9.89 \\
+High density ($\geq$ median, 1990) & $\approx$1,200 & 0.435 & 0.174 & 1.83 \\
+\shaderow Low density ($<$ median, 1990) & $\approx$1,200 & 0.493 & 0.400 & 7.46 \\
+Density Q1 (least dense) & $\approx$600 & 0.088 & 1.080 & 0.007 \\
+\shaderow Density Q2 & $\approx$600 & 0.590 & 0.311 & 6.48 \\
+Density Q3 & $\approx$600 & 0.367 & 0.240 & 2.58 \\
+\shaderow Density Q4 (most dense) & $\approx$600 & 0.540 & 0.255 & 6.47 \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\tablenote{Each sub-regional row estimates $\psi$ by IV (\texttt{ivreg2}, Bartik
+instrument, weighted by 1990 homeowners). KP $F$ = Kleibergen--Paap Wald
+$F$-statistic.  Conventional threshold for adequate identification: $F \geq 10$.
+Negative estimates for fringe counties reflect near-zero first stages and should
+not be given structural interpretation.  Full-sample row reproduces the
+preferred specification of \citet{severen2021}, Table~4 (column~6).
+Source: \texttt{tracts\_elasticities\_coastal.do},
+\texttt{tracts\_elasticities\_density.do},
+\texttt{tracts\_elasticities\_countygroup.do}.}
+\end{table}
+
+\subsection{``Amplified-connectivity'' counterfactuals}
+\label{subsec:res_faster}
+
+Table~\ref{tab:faster} reports the welfare gains from amplifying the Metro Rail
+commuting benefit, expressed as the incremental gain on top of the \$93.55
+million baseline from current transit.  The relationship is roughly linear:
+doubling the reduction in disutility ($s = 2\times$) adds \$105 million per
+year, approximately four times the gain from a 25\,\% amplification (\$25
+million).
+
+\begin{table}[H]
+\centering
+\caption{Welfare gains from amplified Metro Rail connectivity}
+\label{tab:faster}
+\smallskip
+\begin{tabular}{L{3.8cm} C{3.2cm} C{3.2cm} C{2.8cm}}
+\toprule
+\textbf{Multiplier $s$} & \textbf{Incremental gain (\$M/year)} & \textbf{Total welfare (\$M/year)} & \textbf{Open-city pop.\ gain} \\
+\midrule
+\shaderow 1.0$\times$ (current) & \$0   & \$93.55   & 0.000\% \\
+         1.25$\times$           & \$25.17  & \$118.72  & 0.024\% \\
+\shaderow 1.50$\times$          & \$51.09  & \$144.64  & 0.048\% \\
+         2.00$\times$           & \$105.26 & \$198.81  & 0.099\% \\
+\shaderow 3.00$\times$          & \$223.47 & \$317.02  & 0.211\% \\
+         20.0$\times$           & \$5{,}921.70 & \$6{,}015.25 & --- \\
+\bottomrule
+\end{tabular}
+
+\medskip
+\tablenote{Incremental gain = additional aggregate welfare on top of current
+transit (\$93.55 million/year).  The multiplier $s$ applies an additional
+disutility reduction of $(s-1)\times$ the estimated effect on Metro corridors.
+Open-city population gains are relative to the current-transit equilibrium.
+The GE model converges at all levels of $s$.
+Source: \texttt{simulate\_faster\_transit.R}; $20\times$ from
+\texttt{map\_faster\_transit\_20x.R}.}
+\end{table}
+
+The $20\times$ counterfactual is extreme but instructive.  Aggregate welfare
+reaches \$5{,}922 million per year, roughly 63 times the current transit benefit
+and about 2.8\,\% of total annual labour earnings in the metro area.  Even at
+this scale the response remains close to linear in $s$: within any plausible
+range of transit improvements, the model's general-equilibrium feedbacks do not
+generate non-linear amplification of the commuting benefit.
+
+\subsection{The mechanism: why $\psi$ does not move aggregate welfare}
+\label{subsec:mechanism}
+
+The insensitivity of aggregate welfare to $\psi$ follows from two features of
+the exercise: the small scale of the intervention, and the nature of the
+closed-city welfare measure.
+
+First, scale.  LA Metro Rail induces roughly a 10--18\,\% increase in commuting
+flows between station pairs, but those pairs are a small fraction of all
+$2{,}552 \times 2{,}552$ tract-pair combinations --- only 4\,\% of tracts are
+near a station.  The aggregate demand shock to housing near stations is
+therefore small relative to the total LA housing stock.
+
+Second, what $\psi$ actually governs.  Monocentric city simulations (using
+actual LA tract geography and an Alonso--Muth--Mills demand structure) make the
+role of $\psi$ transparent.  For a local housing demand shock $D_n$ at tract
+$n$, with demand elasticity $\eta$:
+%
+\begin{equation}
+  \Delta\ln P_n \;=\; \frac{\psi\,D_n}{1 + \eta\,\psi}, \qquad
+  \Delta\ln N_n \;=\; \frac{D_n}{1 + \eta\,\psi}.
+  \label{eq:pq_split}
+\end{equation}
+%
+A higher $\psi$ (more inelastic supply) pushes more of the local adjustment into
+prices and less into quantities.  This split determines the \emph{incidence} of
+the transit gains --- how much is capitalised into land values and captured by
+incumbent landowners versus accommodated by new housing and shared with movers
+--- but it contributes little to the \emph{aggregate} welfare number.  In the
+closed-city measure, the price component is predominantly a transfer between
+residents and incumbent landowners and largely nets out; the aggregate gain is
+dominated by the direct commuting-cost reduction on connected pairs, which does
+not involve $\psi$ at all.  Only when the demand shock is very large (as in the
+$20\times$ counterfactual) do the GE price adjustments become large enough for
+$\psi$ to have a visible aggregate effect.
+
+This points to an important caveat on our own exercise.  Showing that aggregate
+welfare is insensitive to $\psi$ does \emph{not} show that $\psi$ is irrelevant:
+the distributional question that motivated this study --- who captures the gains
+from transit --- is governed precisely by the price-vs-quantity split in
+Equation~\eqref{eq:pq_split}.  Answering it would require decomposing the
+model's gains by tract group and by owner/renter status, which the aggregate
+welfare scalar cannot reveal.  We leave that decomposition to future work.
+
+% ============================================================
+\section{Conclusion}
+\label{sec:conclusion}
+
+This paper replicates the \citet{severen2021} analysis of LA Metro Rail welfare
+and extends it by asking whether the city-wide assumption on housing supply
+elasticity affects the results.  Our answer is that it does not affect the
+aggregate welfare estimate, and we show why.
+
+The attempt to estimate $\psi$ sub-regionally reveals a data limitation: the
+Bartik instrument, moderately strong at the pooled level (KP $F = 12.3$ in the
+preferred specification, with a wide bootstrap confidence interval for $\psi$),
+loses power entirely when the sample is partitioned by geography or density.
+This limits what can be learned about heterogeneity in housing supply conditions
+across LA's sub-markets from this instrument and this dataset.
+
+The GE sensitivity analysis, however, shows that this limitation is largely
+inconsequential for the paper's headline welfare estimate.  Across a $5\times$
+range of $\psi$, aggregate welfare moves by \$0.33 million --- 0.35\,\% of the
+\$93.55 million baseline.  The mechanism is transparent: Metro Rail is a small
+intervention in a large, car-dominated city, and the price adjustments that
+$\psi$ governs are largely transfers within the closed city rather than
+aggregate gains.  We emphasise that this is a statement about the aggregate:
+$\psi$ continues to govern the incidence of the gains --- the split between
+capitalisation into land values and broadly shared housing-quantity adjustment
+--- which the aggregate welfare scalar cannot detect.
+
+The amplified-connectivity counterfactuals add a policy implication.  Even
+doubling the reduction in commuting disutility would add only \$105 million per
+year, and the response is linear in the multiplier up to extreme values (at an
+imaginary $20\times$ amplification the gain reaches \$5{,}922 million).  The
+pattern is consistent with network coverage, rather than the per-pair magnitude
+of the commuting benefit, being the binding constraint on Metro Rail's welfare
+impact --- though a direct test would require simulating network expansion.
+
+Taken together, these findings reinforce a central message of
+\citet{severen2021}. The LA Metro Rail's welfare impact is modest because the city's
+commuting patterns are fundamentally shaped by car infrastructure, and a limited
+rail network serving 4\,\% of census tracts cannot substantially reshape spatial
+equilibrium.  Housing supply elasticity, however it varies across the metro
+area, is not the lever that would change this conclusion.
+
+% ============================================================
+\newpage
+\bibliographystyle{plainnat}
+\begin{thebibliography}{99}
+
+\bibitem[Bartik(1991)]{bartik1991}
+Bartik, T.~J. (1991).
+\newblock \emph{Who Benefits from State and Local Economic Development
+  Policies?}
+\newblock W.~E. Upjohn Institute for Employment Research, Kalamazoo, MI.
+
+\bibitem[Dekle et~al.(2008)Dekle, Eaton, and Kortum]{dekle2008global}
+Dekle, R., Eaton, J., and Kortum, S. (2008).
+\newblock Global rebalancing with gravity: Measuring the burden of adjustment.
+\newblock \emph{IMF Staff Papers}, 55\penalty0 (3):\penalty0 511--540.
+
+\bibitem[Diamond and McQuade(2019)]{diamond2019}
+Diamond, R. and McQuade, T. (2019).
+\newblock Who wants affordable housing in their backyard? An equilibrium
+  analysis of low-income property development.
+\newblock \emph{Journal of Political Economy}, 127\penalty0 (3):\penalty0
+  1063--1117.
+
+\bibitem[Goldsmith-Pinkham et~al.(2020)Goldsmith-Pinkham, Sorkin, and
+  Swift]{goldsmith2020}
+Goldsmith-Pinkham, P., Sorkin, I., and Swift, H. (2020).
+\newblock Bartik instruments: What, when, why, and how.
+\newblock \emph{American Economic Review}, 110\penalty0 (8):\penalty0
+  2586--2624.
+
+\bibitem[Monte et~al.(2018)Monte, Redding, and Rossi-Hansberg]{monte2018}
+Monte, F., Redding, S.~J., and Rossi-Hansberg, E. (2018).
+\newblock Commuting, migration, and local employment elasticities.
+\newblock \emph{American Economic Review}, 108\penalty0 (12):\penalty0
+  3855--3890.
+
+\bibitem[Severen(2021)]{severen2021}
+Severen, C. (2021).
+\newblock Commuting, labor, and housing market effects of mass transportation:
+  Welfare and identification.
+\newblock \emph{Review of Economics and Statistics}, forthcoming.
+\newblock \url{https://doi.org/10.1162/rest_a_01037}.
+
+\end{thebibliography}
+
+\end{document}

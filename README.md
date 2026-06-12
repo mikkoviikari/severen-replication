@@ -7,8 +7,14 @@ Housing Market Effects of Mass Transportation: Welfare and Identification"**
 The original paper estimates the general-equilibrium welfare effects of the 1990–2002
 Los Angeles Metro Rail build-out on commuting flows, wages, and housing prices across
 2,552 census tracts in the five-county LA metro area. This repository replicates the
-full pipeline and adds extensions on housing supply elasticity (ψ) sensitivity and
-faster-transit counterfactuals.
+full pipeline and adds extensions on housing-supply (ψ) sensitivity and
+amplified-connectivity ("faster-transit") counterfactuals.
+
+> **Convention note:** throughout, ψ follows the paper's convention of an **inverse**
+> housing supply elasticity (the slope of price on quantity). The baseline ψ = 1.602
+> implies a housing supply elasticity of 1/ψ = 0.624 — i.e., supply is inelastic.
+> Higher ψ = less elastic supply. Welfare figures are **aggregate annual** amounts for
+> the five-county area (the paper's "$94 million in annual benefits"), not per-person.
 
 ---
 
@@ -49,7 +55,7 @@ and `stata-tex` (from [https://github.com/paulnov/stata-tex](https://github.com/
 
 ```r
 install.packages(c(
-  "Matrix", "dplyr", "ggplot2", "scales", "patchwork",
+  "Matrix", "dplyr", "tidyr", "ggplot2", "scales", "patchwork",
   "sf", "rnaturalearth", "data.table", "xtable"
 ))
 ```
@@ -89,17 +95,18 @@ tar -xzf output_other.tar.gz -C output/
 ```
 severen/
 ├── code/
-│   ├── build/        # 24 Stata + 8 R scripts: raw data → analytical datasets
-│   ├── analysis/     # 18 Stata + 9 R scripts: estimation, simulation, maps
-│   ├── welfare/      # 7 R scripts: GE equilibrium solver and counterfactuals
-│   └── tablecode/    # stata-tex table generation (see tablecode/README.md)
-├── tables/           # LaTeX table templates and filled results
-├── figures/          # Output maps and figures
-├── results/          # Preliminary model results (called by analysis scripts)
-├── notes/            # Extended analysis notes (psi_findings.md)
-├── master.do         # Stata entry point — runs full build + analysis pipeline
-├── profile.do        # Environment settings — called automatically by master.do
-└── setup.do          # Stata package installer (run once)
+│   ├── build/         # Stata + R scripts: raw data → analytical datasets
+│   ├── analysis/      # Stata + R scripts: estimation, simulation, maps
+│   ├── welfare/       # R scripts: GE equilibrium solver and counterfactuals
+│   ├── bartik-weight/ # Rotemberg weight diagnostics for the Bartik instrument
+│   └── tablecode/     # stata-tex table generation (see tablecode/README.md)
+├── tables/            # LaTeX table templates and filled results
+├── figures/           # Output maps and figures
+├── results/           # Preliminary model results (called by analysis scripts)
+├── notes/             # Extended analysis notes (psi_findings.md)
+├── master.do          # Stata entry point — runs full build + analysis pipeline
+├── profile.do         # Environment settings — called automatically by master.do
+└── setup.do           # Stata package installer (run once)
 ```
 
 ---
@@ -142,19 +149,19 @@ Key outputs by table:
 | Table 3 (Panels A–B) | `code/analysis/tracts_elasticities.do` |
 | Table 3 (Panel C) | `code/analysis/comparison_FEs_vs_wage.do` |
 | Table 4 | `code/analysis/tracts_elasticities.do` |
-| Table 5 | `code/analysis/estimates_lambdas.do` |
+| Table 5 | `code/analysis/estimate_lambdas.do` |
 | Table 6 | `code/welfare/run_welfare_main.R` + `run_welfare_bootstrap.R` |
 | Table E1 | `code/analysis/bootstrap_run.do` |
 | Table F1 | `code/analysis/gravity.do` |
 | Table H2 | `code/analysis/test_ncdbpretrends.do` |
 | Tables H7–H8 | `code/analysis/epsilon_shiftshareanalysis*.do` |
-| Tables H9–H12 | `code/analysis/estimates_lambdas.do` |
+| Tables H9–H12 | `code/analysis/estimate_lambdas.do` |
 | Table H13 | `code/welfare/run_welfare_extended.R` |
 
 Also produces `output/welfare/la_data_2000_v202012.RData` — GE model inputs required
 by all R welfare scripts.
 
-### Step 4 — GE welfare analysis (R)
+### Step 3 — GE welfare analysis (R)
 
 ```r
 # Set cdir to your project root first
@@ -163,7 +170,8 @@ source("code/welfare/index_rwelfarescripts.R")
 
 Runs the full general-equilibrium welfare model (hat-algebra, Dekle-Eaton-Kortum 2008).
 Main outputs:
-- Closed-city and open-city welfare gains from Metro Rail (~$94/person)
+- Closed-city and open-city welfare gains from Metro Rail (~$94 million per year,
+  aggregate, for the five-county area — roughly $14 per worker)
 - PDF/PNG figures for all GE counterfactuals
 
 ---
@@ -171,9 +179,9 @@ Main outputs:
 ## Extended analyses
 
 The following scripts extend the original paper. All require
-`output/welfare/la_data_2000_v202012.RData` from Step 3.
+`output/welfare/la_data_2000_v202012.RData` from Step 2.
 
-### Housing supply elasticity (ψ) sensitivity
+### Housing supply (ψ) sensitivity
 
 #### Geographic covariates
 
@@ -185,15 +193,16 @@ Produces `output/coastal_indicator.csv`: tract-level coastal distance, coastal
 indicator, land area (km²), and WGS84 centroids. Required by subsequent ψ scripts
 and Stata splits.
 
-#### Partial-equilibrium spatial counterfactual
+#### Welfare across the ψ grid
 
 ```bash
-Rscript code/analysis/simulate_psi_counterfactual.R
+Rscript code/welfare/run_welfare_psi_sensitivity.R
 ```
 
-Calibrates tract-level housing supply costs (c_n) and amenities (A_n) from the 2000
-equilibrium at ψ₀ = 1.602, then solves a closed-city fixed-point under alternative ψ
-values with wages held fixed. Output: `output/welfare/psi_counterfactual.csv`
+Re-solves the full GE model at each ψ on a grid from 0.5 to 4.0 and records the
+closed-city welfare gain. Output: `output/welfare/psi_sensitivity.csv` + `.pdf`.
+Key result: aggregate welfare is essentially invariant to ψ (varies by ~$0.4M
+across the full grid, around the $93.55M baseline).
 
 #### Full GE spatial simulation across ψ
 
@@ -204,32 +213,68 @@ Rscript code/analysis/simulate_ge_psi_spatial.R
 Runs `eqSolve_RemoveTransit()` across ψ ∈ {0.5, 0.75, 1.0, 1.25, 1.602, 2.0, 3.0, 4.0}
 and extracts tract-level Q̂, Ŵ, N̂. Output: `output/welfare/ge_psi_spatial.csv`
 
+#### λ × ψ interaction grid
+
+```bash
+Rscript code/analysis/simulate_lambda_psi_grid.R
+```
+
+2D sensitivity: re-solves the GE model over a grid of the transit commuting-effect
+multiplier (scaling λ_D00, λ_D02) crossed with ψ, and plots aggregate annual welfare
+($M) as a heatmap. Welfare scales roughly linearly in the λ multiplier; the ψ effect
+is small and the two are close to separable.
+Output: `output/welfare/lambda_psi_grid.csv` + `.pdf`
+
+#### Partial-equilibrium spatial counterfactuals
+
+```bash
+Rscript code/analysis/simulate_psi_counterfactual.R
+Rscript code/analysis/simulate_spatial_eqbm_psi.R
+```
+
+Calibrate tract-level housing supply costs and amenities from the 2000 equilibrium
+at ψ₀ = 1.602, then solve closed-city fixed points under alternative ψ values with
+wages held fixed. Outputs: `output/welfare/psi_counterfactual.csv`,
+`output/welfare/spatial_eqbm_psi.csv`.
+**Caveat:** these auxiliary scripts parameterize the supply curve as Q = c·N^(1/ψ),
+treating ψ as the supply elasticity proper — the *opposite* of the paper's
+inverse-elasticity convention used by the GE model. Interpret their ψ direction
+accordingly (see convention note at top).
+
 #### Monocentric city illustration
 
 ```bash
 Rscript code/analysis/simulate_monocentric_psi.R
 ```
 
-Textbook Alonso-Muth-Mills model illustrating low-ψ (steep price gradient) vs.
-high-ψ (steep density gradient) mechanisms. Output: `output/welfare/monocentric_psi.csv`
+Textbook Alonso-Muth-Mills model illustrating how supply conditions split a local
+demand shock between prices and quantities. **Caveat:** like the PE scripts above,
+this script uses ψ as the supply elasticity proper (ΔlnN = ψ·D/(1+ηψ)), so within
+the script low ψ = steep price gradient — the opposite direction from the paper's
+convention. Output: `output/welfare/monocentric_psi.csv`
 
 #### Heterogeneous ψ IV estimates (Stata)
 
-Requires `powFEs.dta` (Step 3) and `output/coastal_indicator.csv` (above).
+Requires `powFEs.dta` (Step 2) and `output/coastal_indicator.csv` (above).
 
 ```stata
 stata-mp -b do code/analysis/tracts_elasticities_coastal.do
 stata-mp -b do code/analysis/tracts_elasticities_density.do
+stata-mp -b do code/analysis/tracts_elasticities_countygroup.do
 ```
 
-- **Coastal split**: Bartik instrument is too weak for coastal tracts (F ≈ 0.2,
-  N ≈ 188); inland ψ ≈ 0.49 is the reliable result.
-- **Density split**: median split on 1990 homeowner density; both groups have adequate
-  first stages (F > 10). High-density ψ < pooled ψ ≈ 0.46 < low-density ψ.
+- **Coastal split**: Bartik instrument is too weak for coastal tracts (KP F ≈ 0.2,
+  N = 188); inland (93% of tracts) gives ψ̂ ≈ 0.49 with KP F = 9.89 — the most
+  nearly reliable sub-sample result.
+- **Density split**: median split on 1990 homeowner density. First stages are weak
+  (KP F = 1.83 high-density, 7.46 low-density — both below 10). Point estimates
+  ψ̂ ≈ 0.44 (high-density) and 0.49 (low-density), both well below the pooled 1.602.
+- **County groups**: core (LA + Orange) vs. fringe (Riverside + San Bernardino +
+  Ventura); KP F = 3.24 and 1.93 respectively — too weak for inference.
 
 See `notes/psi_findings.md` for a full summary.
 
-### Faster-transit counterfactuals
+### Amplified-connectivity ("faster-transit") counterfactuals
 
 ```bash
 # Welfare, price map, and population sorting at multipliers 1.25×–3×
@@ -247,11 +292,13 @@ The counterfactual scales the structural commuting disutility parameters
 — by multiplier s, applying (s−1) additional units of the observed commuting
 benefit to all connected OD pairs. It does not compute new travel times.
 
-Key result: doubling the estimated commuting benefit (s=2) raises welfare by
-$105/person. Welfare rises roughly linearly to $223/person at s=3. Gains are
-almost entirely capitalised into land prices at station tracts. The binding
-constraint is network coverage — only 94/2,552 tracts (3.7%) are near stations
-— not the magnitude of the commuting benefit per connected pair.
+Key result: doubling the estimated commuting benefit (s=2) adds $105 million/year
+in aggregate welfare, rising roughly linearly to $223 million/year at s=3. This
+pattern is consistent with network coverage being the binding constraint — only
+94/2,552 tracts (3.7%) are near stations, and just ~0.8% of commuters travel on
+Metro-connected OD pairs — rather than the per-pair magnitude of the benefit,
+though a direct test would require simulating network expansion, which these
+scripts do not do.
 
 ---
 
@@ -260,7 +307,7 @@ constraint is network coverage — only 94/2,552 tracts (3.7%) are near stations
 The welfare model (`code/welfare/simcode_functions.R`) uses hat-algebra: it solves for
 **proportional changes** from the calibrated 2000 baseline, not absolute levels.
 
-Two important limitations:
+Three important limitations:
 
 1. **ψ counterfactuals**: Changing ψ alone with no demand shock produces trivial
    Q̂ = Ŵ = N̂ = 1. The scripts here answer "how does the transit removal response
@@ -268,8 +315,18 @@ Two important limitations:
    requires re-estimating all structural parameters from scratch.
 
 2. **Coverage constraint**: The transit shock only affects OD pairs crossing the Metro
-   corridor (λ_D00, λ_D02 parameters). Faster trains only benefit the ~8% of commuters
-   already on those corridors. Network expansion dominates speed as a welfare driver.
+   corridor (λ_D00, λ_D02 parameters). Only ~0.8% of commuters travel on
+   Metro-connected OD pairs (0.04% of all OD pairs), so amplifying the per-pair
+   benefit moves aggregate welfare roughly linearly and modestly. This is consistent
+   with network coverage, rather than per-pair benefit size, limiting aggregate gains,
+   though no expansion counterfactual is simulated.
+
+3. **ψ convention mismatch in auxiliary scripts**: The GE model and the paper define
+   ψ as an inverse supply elasticity (higher ψ = less elastic). The auxiliary
+   partial-equilibrium and monocentric scripts (`simulate_psi_counterfactual.R`,
+   `simulate_spatial_eqbm_psi.R`, `simulate_monocentric_psi.R`) parameterize supply
+   the other way around (ψ as the elasticity proper). Comparisons across the two
+   families of scripts should flip the ψ direction.
 
 ---
 
